@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hms-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: hospital_db
+      MYSQL_USER: hms_user
+      MYSQL_PASSWORD: hms_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/src/main/resources/db/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    networks:
+      - hms-network
+
+  backend:
+    build: ./backend
+    container_name: hms-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hospital_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: hms_user
+      SPRING_DATASOURCE_PASSWORD: hms_password
+      JWT_SECRET: mySecretKey123456789012345678901234567890
+      JWT_EXPIRATIONMS: 86400000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - hms-network
+
+volumes:
+  mysql_data:
+
+networks:
+  hms-network:
+    driver: bridge

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        .feature-card {
+            transition: transform 0.3s;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .login-section {
+            background: #f8f9fa;
+            padding: 40px 0;
+        }
+        .api-section {
+            padding: 60px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-hospital me-2"></i>Hospital Management System
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#home">Home</a>
+                <a class="nav-link" href="#api">API</a>
+                <a class="nav-link" href="#database">Database</a>
+                <a class="nav-link" href="#about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="fas fa-hospital me-3"></i>Hospital Management System
+            </h1>
+            <p class="lead mb-4">A modern RESTful API for managing hospital operations with secure authentication</p>
+            <div class="mb-4">
+                <span class="status-badge status-online">
+                    <i class="fas fa-circle me-2"></i>System Online
+                </span>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card bg-white text-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Login</h5>
+                            <form id="loginForm">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <select class="form-select" id="userType">
+                                            <option value="admin">Admin</option>
+                                            <option value="doctor1">Doctor</option>
+                                            <option value="clerk1">Clerk</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <input type="password" class="form-control" id="password" placeholder="Password" readonly>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="loginResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">System Features</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card feature-card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Patient Management</h5>
+                            <p class="card-text">Complete CRUD operations for patient records</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-user-md fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Doctor Management</h5>
+                            <p class="card-text">Manage doctor profiles and specialties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-calendar-check fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">Appointments</h5>
+                            <p class="card-text">Schedule and manage patient appointments</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-file-invoice-dollar fa-3x text-info mb-3"></i>
+                            <h5 class="card-title">Billing System</h5>
+                            <p class="card-text">Generate and track patient bills</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Section -->
+    <section id="api" class="api-section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">API Documentation</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-book me-2"></i>Interactive API Docs</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Explore our complete REST API with Swagger UI:</p>
+                            <a href="/swagger-ui.html" target="_blank" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-external-link-alt me-2"></i>Open Swagger UI
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-code me-2"></i>Sample API Calls</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="code-block">
+                                <strong>Login:</strong><br>
+                                <code>POST /api/v1/auth/login</code>
+                            </div>
+                            <div class="code-block">
+                                <strong>Get Patients:</strong><br>
+                                <code>GET /api/v1/patients</code>
+                            </div>
+                            <div class="code-block">
+                                <strong>Create Appointment:</strong><br>
+                                <code>POST /api/v1/appointments</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Database Section -->
+    <section id="database" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Database Console</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-database me-2"></i>H2 Database Console</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <p>Access the live database to view and query data:</p>
+                            <div class="alert alert-info">
+                                <strong>Connection Details:</strong><br>
+                                JDBC URL: <code>jdbc:h2:mem:hospitaldb</code><br>
+                                Username: <code>sa</code><br>
+                                Password: <code>(empty)</code>
+                            </div>
+                            <a href="/h2-console" target="_blank" class="btn btn-success btn-lg">
+                                <i class="fas fa-database me-2"></i>Open Database Console
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Data Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Live System Data</h2>
+            <div class="row" id="liveData">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-primary" onclick="loadLiveData()">
+                        <i class="fas fa-sync me-2"></i>Load Live Data
+                    </button>
+                </div>
+            </div>
+            <div id="dataDisplay" class="mt-4"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center">
+                    <h2 class="mb-4">About This Project</h2>
+                    <p class="lead">
+                        This Hospital Management System demonstrates modern web development practices 
+                        with Spring Boot backend, RESTful API design, JWT authentication, and role-based access control.
+                    </p>
+                    <div class="mt-4">
+                        <h5>Technologies Used:</h5>
+                        <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
+                            <span class="badge bg-primary p-2">Spring Boot</span>
+                            <span class="badge bg-success p-2">Spring Security</span>
+                            <span class="badge bg-warning p-2">JWT Auth</span>
+                            <span class="badge bg-info p-2">H2 Database</span>
+                            <span class="badge bg-secondary p-2">Maven</span>
+                            <span class="badge bg-dark p-2">REST API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Hospital Management System. Built with Spring Boot and modern web technologies.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set password based on user type
+        document.getElementById('userType').addEventListener('change', function() {
+            const passwords = {
+                'admin': 'admin123',
+                'doctor1': 'doctor123',
+                'clerk1': 'clerk123'
+            };
+            document.getElementById('password').value = passwords[this.value];
+        });
+
+        // Set initial password
+        document.getElementById('password').value = 'admin123';
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userType = document.getElementById('userType').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: userType,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('loginResult').innerHTML = 
+                        `<div class="alert alert-success">
+                            <strong>Login Successful!</strong><br>
+                            Token: ${data.accessToken.substring(0, 50)}...
+                        </div>`;
+                } else {
+                    document.getElementById('loginResult').innerHTML = 
+                        `<div class="alert alert-danger">
+                            <strong>Login Failed:</strong> ${data.error || data.message}
+                        </div>`;
+                }
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = 
+                    `<div class="alert alert-danger">
+                        <strong>Error:</strong> ${error.message}
+                    </div>`;
+            }
+        });
+
+        // Load live data
+        async function loadLiveData() {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                document.getElementById('dataDisplay').innerHTML = 
+                    '<div class="alert alert-warning">Please login first to view live data.</div>';
+                return;
+            }
+
+            try {
+                const [patients, doctors, appointments, bills] = await Promise.all([
+                    fetch('/api/v1/patients', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).then(r => r.json()),
+                    fetch('/api/v1/doctors', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).then(r => r.json()),
+                    fetch('/api/v1/appointments', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).then(r => r.json()),
+                    fetch('/api/v1/bills', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).then(r => r.json())
+                ]);
+
+                document.getElementById('dataDisplay').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-primary">${patients.length}</h3>
+                                    <p class="mb-0">Total Patients</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-success">${doctors.length}</h3>
+                                    <p class="mb-0">Total Doctors</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-warning">${appointments.length}</h3>
+                                    <p class="mb-0">Appointments</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-info">${bills.length}</h3>
+                                    <p class="mb-0">Total Bills</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('dataDisplay').innerHTML = 
+                    `<div class="alert alert-danger">Error loading data: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
