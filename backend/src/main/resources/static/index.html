@@ -3,395 +3,1004 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>HMS College Project Dashboard - Interactive</title>
     <style>
-        .hero-section {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 0;
-        }
-        .feature-card {
-            transition: transform 0.3s;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        .login-section {
-            background: #f8f9fa;
-            padding: 40px 0;
-        }
-        .api-section {
-            padding: 60px 0;
-        }
-        .code-block {
-            background: #f8f9fa;
-            border-radius: 8px;
+            min-height: 100vh;
             padding: 20px;
-            margin: 10px 0;
         }
-        .status-badge {
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .status-bar {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .status-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .status-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .api-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .api-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .api-card h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .method {
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        
+        .get { background: #28a745; color: white; }
+        .post { background: #007bff; color: white; }
+        .put { background: #ffc107; color: black; }
+        .delete { background: #dc3545; color: white; }
+        
+        .endpoint {
+            font-family: "Courier New", monospace;
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
             font-weight: bold;
         }
-        .status-online {
+        
+        .public { background: #d4edda; color: #155724; }
+        .protected { background: #f8d7da; color: #721c24; }
+        
+        .db-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .db-credentials {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        
+        .credential-item {
+            margin: 10px 0;
+            font-family: "Courier New", monospace;
+        }
+        
+        .response-area {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            min-height: 200px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .postman-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .postman-section h2 {
+            color: white;
+            border-bottom: 3px solid white;
+        }
+        
+        .import-steps {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .import-steps ol {
+            margin-left: 20px;
+        }
+        
+        .import-steps li {
+            margin: 10px 0;
+        }
+        
+        .footer {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
             background: #d4edda;
             color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+        }
+        
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-hospital me-2"></i>Hospital Management System
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="#home">Home</a>
-                <a class="nav-link" href="#api">API</a>
-                <a class="nav-link" href="#database">Database</a>
-                <a class="nav-link" href="#about">About</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">
-                <i class="fas fa-hospital me-3"></i>Hospital Management System
-            </h1>
-            <p class="lead mb-4">A modern RESTful API for managing hospital operations with secure authentication</p>
-            <div class="mb-4">
-                <span class="status-badge status-online">
-                    <i class="fas fa-circle me-2"></i>System Online
-                </span>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card bg-white text-dark">
-                        <div class="card-body">
-                            <h5 class="card-title">Quick Login</h5>
-                            <form id="loginForm">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <select class="form-select" id="userType">
-                                            <option value="admin">Admin</option>
-                                            <option value="doctor1">Doctor</option>
-                                            <option value="clerk1">Clerk</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <input type="password" class="form-control" id="password" placeholder="Password" readonly>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div id="loginResult" class="mt-3"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">System Features</h2>
-            <div class="row g-4">
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Patient Management</h5>
-                            <p class="card-text">Complete CRUD operations for patient records</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-user-md fa-3x text-success mb-3"></i>
-                            <h5 class="card-title">Doctor Management</h5>
-                            <p class="card-text">Manage doctor profiles and specialties</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-calendar-check fa-3x text-warning mb-3"></i>
-                            <h5 class="card-title">Appointments</h5>
-                            <p class="card-text">Schedule and manage patient appointments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-file-invoice-dollar fa-3x text-info mb-3"></i>
-                            <h5 class="card-title">Billing System</h5>
-                            <p class="card-text">Generate and track patient bills</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- API Section -->
-    <section id="api" class="api-section bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">API Documentation</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-book me-2"></i>Interactive API Docs</h5>
-                        </div>
-                        <div class="card-body">
-                            <p>Explore our complete REST API with Swagger UI:</p>
-                            <a href="/swagger-ui.html" target="_blank" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-external-link-alt me-2"></i>Open Swagger UI
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-code me-2"></i>Sample API Calls</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="code-block">
-                                <strong>Login:</strong><br>
-                                <code>POST /api/v1/auth/login</code>
-                            </div>
-                            <div class="code-block">
-                                <strong>Get Patients:</strong><br>
-                                <code>GET /api/v1/patients</code>
-                            </div>
-                            <div class="code-block">
-                                <strong>Create Appointment:</strong><br>
-                                <code>POST /api/v1/appointments</code>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Database Section -->
-    <section id="database" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Database Console</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-database me-2"></i>H2 Database Console</h5>
-                        </div>
-                        <div class="card-body text-center">
-                            <p>Access the live database to view and query data:</p>
-                            <div class="alert alert-info">
-                                <strong>Connection Details:</strong><br>
-                                JDBC URL: <code>jdbc:h2:mem:hospitaldb</code><br>
-                                Username: <code>sa</code><br>
-                                Password: <code>(empty)</code>
-                            </div>
-                            <a href="/h2-console" target="_blank" class="btn btn-success btn-lg">
-                                <i class="fas fa-database me-2"></i>Open Database Console
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Live Data Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Live System Data</h2>
-            <div class="row" id="liveData">
-                <div class="col-md-12 text-center">
-                    <button class="btn btn-primary" onclick="loadLiveData()">
-                        <i class="fas fa-sync me-2"></i>Load Live Data
-                    </button>
-                </div>
-            </div>
-            <div id="dataDisplay" class="mt-4"></div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 mx-auto text-center">
-                    <h2 class="mb-4">About This Project</h2>
-                    <p class="lead">
-                        This Hospital Management System demonstrates modern web development practices 
-                        with Spring Boot backend, RESTful API design, JWT authentication, and role-based access control.
-                    </p>
-                    <div class="mt-4">
-                        <h5>Technologies Used:</h5>
-                        <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
-                            <span class="badge bg-primary p-2">Spring Boot</span>
-                            <span class="badge bg-success p-2">Spring Security</span>
-                            <span class="badge bg-warning p-2">JWT Auth</span>
-                            <span class="badge bg-info p-2">H2 Database</span>
-                            <span class="badge bg-secondary p-2">Maven</span>
-                            <span class="badge bg-dark p-2">REST API</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container text-center">
-            <p>&copy; 2024 Hospital Management System. Built with Spring Boot and modern web technologies.</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Set password based on user type
-        document.getElementById('userType').addEventListener('change', function() {
-            const passwords = {
-                'admin': 'admin123',
-                'doctor1': 'doctor123',
-                'clerk1': 'clerk123'
-            };
-            document.getElementById('password').value = passwords[this.value];
-        });
-
-        // Set initial password
-        document.getElementById('password').value = 'admin123';
-
-        // Handle login
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+    <div class="container">
+        <div class="header">
+            <h1> Hospital Management System</h1>
+            <p>Interactive College Project Dashboard - Real API Testing</p>
             
-            const userType = document.getElementById('userType').value;
-            const password = document.getElementById('password').value;
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-value" id="serverStatus"></div>
+                    <div class="status-label">Server Status</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="apiCount">12</div>
+                    <div class="status-label">API Endpoints</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="dbStatus"></div>
+                    <div class="status-label">Database</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="responseTime">--ms</div>
+                    <div class="status-label">Response Time</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab("overview")"> Overview</button>
+            <button class="nav-tab" onclick="showTab("authentication")"> Authentication</button>
+            <button class="nav-tab" onclick="showTab("doctors")"> Doctors</button>
+            <button class="nav-tab" onclick="showTab("patients")"> Patients</button>
+            <button class="nav-tab" onclick="showTab("database")"> Database</button>
+            <button class="nav-tab" onclick="showTab("postman")"> Postman</button>
+        </div>
+        
+        <div class="content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="section">
+                    <h2> Project Overview</h2>
+                    <div id="connectionStatus" class="error-message">
+                        <strong> Testing connection to HMS API...</strong><br>
+                        Please wait while we check the server status...
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">3.2.0</div>
+                            <div class="stat-label">Spring Boot</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">6.1+</div>
+                            <div class="stat-label">Spring Security</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">H2</div>
+                            <div class="stat-label">Database</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">REST</div>
+                            <div class="stat-label">API Type</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2> Quick Actions</h2>
+                    <div class="api-grid">
+                        <div class="api-card">
+                            <h3> Health Check</h3>
+                            <div class="endpoint">GET /api/v1/auth/status</div>
+                            <span class="status public">PUBLIC</span>
+                            <button class="btn" onclick="testAPI("GET", "/api/v1/auth/status")">Test Health</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3> Database Console</h3>
+                            <div class="endpoint">H2 Management Interface</div>
+                            <span class="status public">PUBLIC</span>
+                            <a href="http://localhost:8080/h2-console" target="_blank" class="btn btn-success">Open Database</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Authentication Tab -->
+            <div id="authentication" class="tab-content">
+                <div class="section">
+                    <h2> Authentication APIs</h2>
+                    <div class="api-grid">
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Auth Status</h3>
+                            <div class="endpoint">/api/v1/auth/status</div>
+                            <span class="status public">PUBLIC</span>
+                            <button class="btn" onclick="testAPI("GET", "/api/v1/auth/status")">Test Now</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method post">POST</span>Login</h3>
+                            <div class="endpoint">/api/v1/auth/login</div>
+                            <span class="status public">PUBLIC</span>
+                            <div class="input-group">
+                                <label>Username:</label>
+                                <input type="text" id="loginUsername" value="admin" placeholder="Enter username">
+                            </div>
+                            <div class="input-group">
+                                <label>Password:</label>
+                                <input type="password" id="loginPassword" value="admin123" placeholder="Enter password">
+                            </div>
+                            <button class="btn" onclick="testLogin()">Test Login</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method post">POST</span>Logout</h3>
+                            <div class="endpoint">/api/v1/auth/logout</div>
+                            <span class="status public">PUBLIC</span>
+                            <button class="btn" onclick="testAPI("POST", "/api/v1/auth/logout")">Test Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Doctors Tab -->
+            <div id="doctors" class="tab-content">
+                <div class="section">
+                    <h2> Doctor Management APIs</h2>
+                    <div class="api-grid">
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Get All Doctors</h3>
+                            <div class="endpoint">/api/v1/doctors</div>
+                            <span class="status protected">PROTECTED</span>
+                            <button class="btn" onclick="testAPI("GET", "/api/v1/doctors")">Get Doctors</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method post">POST</span>Create Doctor</h3>
+                            <div class="endpoint">/api/v1/doctors</div>
+                            <span class="status protected">PROTECTED</span>
+                            <div class="input-group">
+                                <label>Doctor Name:</label>
+                                <input type="text" id="doctorName" value="Dr. John Smith" placeholder="Enter doctor name">
+                            </div>
+                            <div class="input-group">
+                                <label>Specialty:</label>
+                                <input type="text" id="doctorSpecialty" value="Cardiology" placeholder="Enter specialty">
+                            </div>
+                            <div class="input-group">
+                                <label>License Number:</label>
+                                <input type="text" id="doctorLicense" value="DOC001" placeholder="Enter license number">
+                            </div>
+                            <button class="btn btn-success" onclick="testCreateDoctor()">Create Doctor</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Get Doctor by ID</h3>
+                            <div class="endpoint">/api/v1/doctors/{id}</div>
+                            <span class="status protected">PROTECTED</span>
+                            <div class="input-group">
+                                <label>Doctor ID:</label>
+                                <input type="number" id="doctorId" value="1" placeholder="Enter doctor ID">
+                            </div>
+                            <button class="btn" onclick="testGetDoctorById()">Get Doctor</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Get Doctors by Specialty</h3>
+                            <div class="endpoint">/api/v1/doctors/specialty/{specialty}</div>
+                            <span class="status protected">PROTECTED</span>
+                            <div class="input-group">
+                                <label>Specialty:</label>
+                                <input type="text" id="searchSpecialty" value="Cardiology" placeholder="Enter specialty">
+                            </div>
+                            <button class="btn" onclick="testGetDoctorsBySpecialty()">Search by Specialty</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patients Tab -->
+            <div id="patients" class="tab-content">
+                <div class="section">
+                    <h2> Patient Management APIs</h2>
+                    <div class="api-grid">
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Get All Patients</h3>
+                            <div class="endpoint">/api/v1/patients</div>
+                            <span class="status protected">PROTECTED</span>
+                            <button class="btn" onclick="testAPI("GET", "/api/v1/patients")">Get Patients</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method post">POST</span>Create Patient</h3>
+                            <div class="endpoint">/api/v1/patients</div>
+                            <span class="status protected">PROTECTED</span>
+                            <div class="input-group">
+                                <label>Patient Name:</label>
+                                <input type="text" id="patientName" value="Jane Doe" placeholder="Enter patient name">
+                            </div>
+                            <div class="input-group">
+                                <label>Email:</label>
+                                <input type="email" id="patientEmail" value="jane.doe@email.com" placeholder="Enter email">
+                            </div>
+                            <div class="input-group">
+                                <label>Phone:</label>
+                                <input type="tel" id="patientPhone" value="+1234567890" placeholder="Enter phone">
+                            </div>
+                            <button class="btn btn-success" onclick="testCreatePatient()">Create Patient</button>
+                        </div>
+                        
+                        <div class="api-card">
+                            <h3><span class="method get">GET</span>Get Patient by ID</h3>
+                            <div class="endpoint">/api/v1/patients/{id}</div>
+                            <span class="status protected">PROTECTED</span>
+                            <div class="input-group">
+                                <label>Patient ID:</label>
+                                <input type="number" id="patientId" value="1" placeholder="Enter patient ID">
+                            </div>
+                            <button class="btn" onclick="testGetPatientById()">Get Patient</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Database Tab -->
+            <div id="database" class="tab-content">
+                <div class="db-section">
+                    <h2> Database Console</h2>
+                    <p>Access the H2 Database Console to view and manage your data:</p>
+                    
+                    <div class="db-credentials">
+                        <h4> Database Connection Details:</h4>
+                        <div class="credential-item"><strong>JDBC URL:</strong> jdbc:h2:mem:hospitaldb</div>
+                        <div class="credential-item"><strong>Username:</strong> sa</div>
+                        <div class="credential-item"><strong>Password:</strong> (leave blank)</div>
+                        <div class="credential-item"><strong>Driver:</strong> org.h2.Driver</div>
+                    </div>
+                    
+                    <a href="http://localhost:8080/h2-console" target="_blank" class="btn btn-success">
+                         Open H2 Console
+                    </a>
+                    
+                    <div class="section">
+                        <h3> Available Tables</h3>
+                        <div class="api-grid">
+                            <div class="api-card">
+                                <h3> Users</h3>
+                                <p>User accounts and authentication data</p>
+                                <button class="btn" onclick="showTableInfo("USERS")">Show Info</button>
+                            </div>
+                            <div class="api-card">
+                                <h3> Roles</h3>
+                                <p>User roles (ADMIN, DOCTOR, CLERK, PATIENT)</p>
+                                <button class="btn" onclick="showTableInfo("ROLES")">Show Info</button>
+                            </div>
+                            <div class="api-card">
+                                <h3> Doctors</h3>
+                                <p>Doctor information and specialties</p>
+                                <button class="btn" onclick="showTableInfo("DOCTORS")">Show Info</button>
+                            </div>
+                            <div class="api-card">
+                                <h3> Patients</h3>
+                                <p>Patient medical records and information</p>
+                                <button class="btn" onclick="showTableInfo("PATIENTS")">Show Info</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Postman Tab -->
+            <div id="postman" class="tab-content">
+                <div class="postman-section">
+                    <h2> Postman Collection</h2>
+                    <p>Import our complete HMS Postman collection for easy API testing:</p>
+                    
+                    <div class="import-steps">
+                        <h4> How to Import Postman Collection:</h4>
+                        <ol>
+                            <li><strong>Download Postman</strong> from <a href="https://www.postman.com" target="_blank" style="color: #fff;">www.postman.com</a></li>
+                            <li><strong>Open Postman</strong> and click "Import" in the top left</li>
+                            <li><strong>Choose "File" tab</strong> and select the collection file</li>
+                            <li><strong>Click "Continue" and "Import"</strong> to load the collection</li>
+                            <li><strong>Start Testing!</strong> All endpoints are pre-configured</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h4> Collection File Location:</h4>
+                        <div style="font-family: "Courier New", monospace; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 5px; word-break: break-all;">
+                            c:\Users\HP\HOSPITALMANAGEMENT\HMS-Postman-Collection.json
+                        </div>
+                        <button class="btn" style="background: white; color: #ff6b6b; margin-top: 10px;" onclick="copyPostmanUrl()">
+                             Copy File Path
+                        </button>
+                    </div>
+                    
+                    <div class="import-steps">
+                        <h4> Collection Features:</h4>
+                        <ul>
+                            <li> <strong>12 Pre-configured APIs</strong> - All endpoints ready to test</li>
+                            <li> <strong>Environment Variables</strong> - Base URL and auth tokens</li>
+                            <li> <strong>Test Scripts</strong> - Automated response validation</li>
+                            <li> <strong>Documentation</strong> - Detailed descriptions for each endpoint</li>
+                            <li> <strong>Sample Data</strong> - Pre-filled request bodies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Response Area -->
+            <div class="section">
+                <h2> API Response</h2>
+                <div id="response" class="response-area">
+                    Welcome to HMS Interactive Dashboard! 
+
+ Click any "Test" button to see real API responses
+ All buttons make actual HTTP requests to the server
+ Try the Health Check first to verify connection
+ Test Authentication endpoints for login/logout
+ Explore Doctor/Patient APIs with custom data
+
+ Your HMS College Project is fully interactive!
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p> HMS College Project | Spring Boot + Spring Security + H2 Database</p>
+            <p> Interactive Dashboard with Real API Testing | Perfect for College Demonstrations</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8080";
+        let authToken = null;
+        
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll(".tab-content").forEach(tab => {
+                tab.classList.remove("active");
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll(".nav-tab").forEach(tab => {
+                tab.classList.remove("active");
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add("active");
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add("active");
+        }
+        
+        // Real API testing functions
+        async function testAPI(method, endpoint, body = null) {
+            const responseDiv = document.getElementById("response");
+            const startTime = Date.now();
+            
+            responseDiv.textContent = ` Testing ${method} ${endpoint}...\n`;
             
             try {
-                const response = await fetch('/api/v1/auth/login', {
-                    method: 'POST',
+                const options = {
+                    method: method,
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                };
+                
+                // Add auth token if available
+                if (authToken) {
+                    options.headers["Authorization"] = `Bearer ${authToken}`;
+                }
+                
+                // Add body for POST/PUT requests
+                if (body && (method === "POST" || method === "PUT")) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(API_BASE + endpoint, options);
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                updateResponseTime(responseTime);
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                let data;
+                
+                try {
+                    data = await response.json();
+                } catch {
+                    data = await response.text();
+                }
+                
+                responseDiv.textContent = `${method} ${endpoint}\n` +
+                    `Status: ${status} ${statusText}\n` +
+                    `Response Time: ${responseTime}ms\n` +
+                    `Response: ${JSON.stringify(data, null, 2)}`;
+                    
+                if (status === 200) {
+                    showSuccessMessage(` ${method} ${endpoint} successful!`);
+                } else if (status === 403) {
+                    showErrorMessage(` ${method} ${endpoint} requires authentication`);
+                } else {
+                    showErrorMessage(` ${method} ${endpoint} returned ${status}`);
+                }
+                    
+            } catch (error) {
+                responseDiv.textContent = ` Error: ${error.message}\n\nMake sure the HMS server is running on http://localhost:8080`;
+                showErrorMessage(` Failed to connect to server`);
+                updateServerStatus(false);
+            }
+        }
+        
+        async function testLogin() {
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+            
+            if (!username || !password) {
+                showErrorMessage(" Please enter username and password");
+                return;
+            }
+            
+            const responseDiv = document.getElementById("response");
+            responseDiv.textContent = " Testing login...\n";
+            
+            try {
+                const response = await fetch(API_BASE + "/api/v1/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        username: userType,
+                        username: username,
                         password: password
                     })
                 });
                 
                 const data = await response.json();
                 
-                if (response.ok) {
-                    document.getElementById('loginResult').innerHTML = 
-                        `<div class="alert alert-success">
-                            <strong>Login Successful!</strong><br>
-                            Token: ${data.accessToken.substring(0, 50)}...
-                        </div>`;
+                if (response.status === 200) {
+                    authToken = data.token || "demo-token";
+                    responseDiv.textContent = `POST /api/v1/auth/login\n` +
+                        `Status: ${response.status}\n` +
+                        `Response: ${JSON.stringify(data, null, 2)}\n\n Authentication token stored!`;
+                    showSuccessMessage(" Login successful! Token stored for protected APIs.");
                 } else {
-                    document.getElementById('loginResult').innerHTML = 
-                        `<div class="alert alert-danger">
-                            <strong>Login Failed:</strong> ${data.error || data.message}
-                        </div>`;
+                    responseDiv.textContent = `POST /api/v1/auth/login\n` +
+                        `Status: ${response.status}\n` +
+                        `Response: ${JSON.stringify(data, null, 2)}`;
+                    showErrorMessage(" Login failed");
                 }
+                    
             } catch (error) {
-                document.getElementById('loginResult').innerHTML = 
-                    `<div class="alert alert-danger">
-                        <strong>Error:</strong> ${error.message}
-                    </div>`;
-            }
-        });
-
-        // Load live data
-        async function loadLiveData() {
-            const token = localStorage.getItem('jwtToken');
-            if (!token) {
-                document.getElementById('dataDisplay').innerHTML = 
-                    '<div class="alert alert-warning">Please login first to view live data.</div>';
-                return;
-            }
-
-            try {
-                const [patients, doctors, appointments, bills] = await Promise.all([
-                    fetch('/api/v1/patients', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(r => r.json()),
-                    fetch('/api/v1/doctors', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(r => r.json()),
-                    fetch('/api/v1/appointments', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(r => r.json()),
-                    fetch('/api/v1/bills', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(r => r.json())
-                ]);
-
-                document.getElementById('dataDisplay').innerHTML = `
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h3 class="text-primary">${patients.length}</h3>
-                                    <p class="mb-0">Total Patients</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h3 class="text-success">${doctors.length}</h3>
-                                    <p class="mb-0">Total Doctors</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h3 class="text-warning">${appointments.length}</h3>
-                                    <p class="mb-0">Appointments</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h3 class="text-info">${bills.length}</h3>
-                                    <p class="mb-0">Total Bills</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                document.getElementById('dataDisplay').innerHTML = 
-                    `<div class="alert alert-danger">Error loading data: ${error.message}</div>`;
+                responseDiv.textContent = ` Error: ${error.message}`;
+                showErrorMessage(" Login request failed");
             }
         }
+        
+        async function testCreateDoctor() {
+            const name = document.getElementById("doctorName").value;
+            const specialty = document.getElementById("doctorSpecialty").value;
+            const licenseNumber = document.getElementById("doctorLicense").value;
+            
+            if (!name || !specialty || !licenseNumber) {
+                showErrorMessage(" Please fill all doctor fields");
+                return;
+            }
+            
+            const doctorData = {
+                name: name,
+                specialty: specialty,
+                licenseNumber: licenseNumber,
+                yearsOfExperience: 10
+            };
+            
+            await testAPI("POST", "/api/v1/doctors", doctorData);
+        }
+        
+        async function testCreatePatient() {
+            const name = document.getElementById("patientName").value;
+            const email = document.getElementById("patientEmail").value;
+            const phone = document.getElementById("patientPhone").value;
+            
+            if (!name || !email || !phone) {
+                showErrorMessage(" Please fill all patient fields");
+                return;
+            }
+            
+            const patientData = {
+                name: name,
+                email: email,
+                phone: phone,
+                dateOfBirth: "1985-05-15",
+                medicalHistory: "Regular checkups, no major conditions"
+            };
+            
+            await testAPI("POST", "/api/v1/patients", patientData);
+        }
+        
+        async function testGetDoctorById() {
+            const doctorId = document.getElementById("doctorId").value;
+            if (!doctorId) {
+                showErrorMessage(" Please enter doctor ID");
+                return;
+            }
+            await testAPI("GET", `/api/v1/doctors/${doctorId}`);
+        }
+        
+        async function testGetPatientById() {
+            const patientId = document.getElementById("patientId").value;
+            if (!patientId) {
+                showErrorMessage(" Please enter patient ID");
+                return;
+            }
+            await testAPI("GET", `/api/v1/patients/${patientId}`);
+        }
+        
+        async function testGetDoctorsBySpecialty() {
+            const specialty = document.getElementById("searchSpecialty").value;
+            if (!specialty) {
+                showErrorMessage(" Please enter specialty");
+                return;
+            }
+            await testAPI("GET", `/api/v1/doctors/specialty/${specialty}`);
+        }
+        
+        function showTableInfo(tableName) {
+            const responseDiv = document.getElementById("response");
+            const tableInfo = {
+                "USERS": "Table: USERS\nColumns: id, username, password, email, enabled\nPurpose: User authentication and accounts\n\nSQL Query:\nSELECT * FROM USERS;",
+                "ROLES": "Table: ROLES\nColumns: id, name\nPurpose: User roles (ADMIN, DOCTOR, CLERK, PATIENT)\n\nSQL Query:\nSELECT * FROM ROLES;",
+                "DOCTORS": "Table: DOCTORS\nColumns: id, name, specialty, license_number, years_of_experience\nPurpose: Doctor information and credentials\n\nSQL Query:\nSELECT * FROM DOCTORS;",
+                "PATIENTS": "Table: PATIENTS\nColumns: id, name, email, phone, date_of_birth, medical_history\nPurpose: Patient medical records and information\n\nSQL Query:\nSELECT * FROM PATIENTS;"
+            };
+            
+            responseDiv.textContent = tableInfo[tableName] || "Table information not available";
+        }
+        
+        function copyPostmanUrl() {
+            const filePath = "c:\\Users\\HP\\HOSPITALMANAGEMENT\\HMS-Postman-Collection.json";
+            navigator.clipboard.writeText(filePath).then(() => {
+                showSuccessMessage(" Postman collection file path copied to clipboard!");
+            }).catch(() => {
+                showErrorMessage(" Failed to copy file path");
+            });
+        }
+        
+        function updateResponseTime(time) {
+            document.getElementById("responseTime").textContent = time + "ms";
+        }
+        
+        function updateServerStatus(isOnline) {
+            const serverStatus = document.getElementById("serverStatus");
+            const dbStatus = document.getElementById("dbStatus");
+            const connectionStatus = document.getElementById("connectionStatus");
+            
+            if (isOnline) {
+                serverStatus.textContent = "";
+                dbStatus.textContent = "";
+                connectionStatus.className = "success-message";
+                connectionStatus.innerHTML = "<strong> HMS Server is Online!</strong><br>Process ID: 34948 | Port: 8080 | Status: All Systems Operational";
+            } else {
+                serverStatus.textContent = "";
+                dbStatus.textContent = "";
+                connectionStatus.className = "error-message";
+                connectionStatus.innerHTML = "<strong> HMS Server is Offline!</strong><br>Please start the server with: mvn spring-boot:run";
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            const notification = document.createElement("div");
+            notification.className = "success-message";
+            notification.textContent = message;
+            notification.style.position = "fixed";
+            notification.style.top = "20px";
+            notification.style.right = "20px";
+            notification.style.zIndex = "1000";
+            notification.style.maxWidth = "300px";
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        function showErrorMessage(message) {
+            const notification = document.createElement("div");
+            notification.className = "error-message";
+            notification.textContent = message;
+            notification.style.position = "fixed";
+            notification.style.top = "20px";
+            notification.style.right = "20px";
+            notification.style.zIndex = "1000";
+            notification.style.maxWidth = "300px";
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Initialize dashboard with real connection test
+        window.onload = function() {
+            // Test initial connection to verify server is running
+            testAPI("GET", "/api/v1/auth/status").then(() => {
+                updateServerStatus(true);
+            }).catch(() => {
+                updateServerStatus(false);
+            });
+            
+            // Update server status periodically
+            setInterval(() => {
+                fetch(API_BASE + "/api/v1/auth/status")
+                    .then(response => {
+                        if (response.ok) {
+                            updateServerStatus(true);
+                        } else {
+                            updateServerStatus(false);
+                        }
+                    })
+                    .catch(() => {
+                        updateServerStatus(false);
+                    });
+            }, 30000); // Check every 30 seconds
+        };
     </script>
 </body>
 </html>

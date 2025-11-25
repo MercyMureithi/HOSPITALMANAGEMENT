@@ -1,0 +1,732 @@
+{
+	"info": {
+		"_postman_id": "hms-college-project-v1",
+		"name": "HMS College Project - Complete API Collection",
+		"description": "Complete Hospital Management System API collection for college project demonstration. Includes all endpoints with pre-configured request bodies, environment variables, and test scripts.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Auth Status - Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test script for Auth Status",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('authenticated');",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "status"]
+						},
+						"description": "Check the authentication status and health of the HMS API. This is a public endpoint that doesn't require authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Authenticate User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test script for Login",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has authentication data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('username');",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('authenticated');",
+									"});",
+									"",
+									"// Store authentication info for future requests",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"authToken\", jsonData.token || \"demo-token\");",
+									"    pm.environment.set(\"currentUser\", jsonData.username);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "login"]
+						},
+						"description": "Authenticate a user with username and password. Default admin credentials: admin/admin123"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout - End Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Clear authentication info",
+									"pm.environment.unset(\"authToken\");",
+									"pm.environment.unset(\"currentUser\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "logout"]
+						},
+						"description": "Logout the current user and end their session."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user login, logout, and status checking."
+		},
+		{
+			"name": "👨‍⚕️ Doctor Management",
+			"item": [
+				{
+					"name": "Get All Doctors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Doctors have required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        pm.expect(jsonData[0]).to.have.property('id');",
+									"        pm.expect(jsonData[0]).to.have.property('name');",
+									"        pm.expect(jsonData[0]).to.have.property('specialty');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors"]
+						},
+						"description": "Retrieve a list of all doctors in the system. Requires authentication with appropriate role (ADMIN, DOCTOR, or CLERK)."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test(\"Response has doctor data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('specialty');",
+									"    pm.expect(jsonData).to.have.property('licenseNumber');",
+									"});",
+									"",
+									"// Store created doctor ID for update/delete tests",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"createdDoctorId\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Dr. Sarah Johnson\",\n  \"specialty\": \"Cardiology\",\n  \"licenseNumber\": \"MED12345\",\n  \"yearsOfExperience\": 12\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors"]
+						},
+						"description": "Create a new doctor record. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has doctor data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('specialty');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors", "{{doctorId}}"]
+						},
+						"description": "Retrieve a specific doctor by their ID. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has updated doctor data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('Dr. Sarah Johnson Updated');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Dr. Sarah Johnson Updated\",\n  \"specialty\": \"Interventional Cardiology\",\n  \"licenseNumber\": \"MED12345\",\n  \"yearsOfExperience\": 13\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors", "{{doctorId}}"]
+						},
+						"description": "Update an existing doctor's information. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Doctor deleted successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors", "{{doctorId}}"]
+						},
+						"description": "Delete a doctor record. This action cannot be undone. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctors by Specialty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/doctors/specialty/{{specialty}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "doctors", "specialty", "{{specialty}}"]
+						},
+						"description": "Retrieve doctors filtered by their specialty. Requires authentication."
+					},
+					"response": []
+				}
+			],
+			"description": "Complete CRUD operations for doctor management including create, read, update, delete, and search by specialty."
+		},
+		{
+			"name": "👩‍⚕️ Patient Management",
+			"item": [
+				{
+					"name": "Get All Patients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Patients have required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        pm.expect(jsonData[0]).to.have.property('id');",
+									"        pm.expect(jsonData[0]).to.have.property('name');",
+									"        pm.expect(jsonData[0]).to.have.property('email');",
+									"        pm.expect(jsonData[0]).to.have.property('phone');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/patients",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "patients"]
+						},
+						"description": "Retrieve a list of all patients in the system. Requires authentication with appropriate role (ADMIN, DOCTOR, or CLERK)."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test(\"Response has patient data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"    pm.expect(jsonData).to.have.property('phone');",
+									"});",
+									"",
+									"// Store created patient ID for update/delete tests",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"createdPatientId\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Michael Smith\",\n  \"email\": \"john.smith@email.com\",\n  \"phone\": \"+1-555-0123\",\n  \"dateOfBirth\": \"1985-06-15\",\n  \"medicalHistory\": \"Regular checkups, no major conditions. Allergies: Penicillin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/patients",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "patients"]
+						},
+						"description": "Create a new patient record. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Patient by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has patient data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "patients", "{{patientId}}"]
+						},
+						"description": "Retrieve a specific patient by their ID. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has updated patient data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('John Michael Smith Updated');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Michael Smith Updated\",\n  \"email\": \"john.smith.updated@email.com\",\n  \"phone\": \"+1-555-0124\",\n  \"dateOfBirth\": \"1985-06-15\",\n  \"medicalHistory\": \"Regular checkups, no major conditions. Allergies: Penicillin. Updated medical history.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "patients", "{{patientId}}"]
+						},
+						"description": "Update an existing patient's information. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Patient deleted successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "patients", "{{patientId}}"]
+						},
+						"description": "Delete a patient record. This action cannot be undone. Requires ADMIN or CLERK role."
+					},
+					"response": []
+				}
+			],
+			"description": "Complete CRUD operations for patient management including create, read, update, and delete operations."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('Running HMS API request...');",
+					"",
+					"// Set default values if not already set",
+					"if (!pm.environment.get('baseUrl')) {",
+					"    pm.environment.set('baseUrl', 'http://localhost:8080');",
+					"}",
+					"",
+					"if (!pm.environment.get('doctorId')) {",
+					"    pm.environment.set('doctorId', '1');",
+					"}",
+					"",
+					"if (!pm.environment.get('patientId')) {",
+					"    pm.environment.set('patientId', '1');",
+					"}",
+					"",
+					"if (!pm.environment.get('specialty')) {",
+					"    pm.environment.set('specialty', 'Cardiology');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"console.log('HMS API response received.');",
+					"",
+					"// Log response details for debugging",
+					"console.log('Status: ' + pm.response.code);",
+					"console.log('Response Time: ' + pm.response.responseTime + 'ms');",
+					"",
+					"// Basic response time test",
+					"pm.test(\"Response time is reasonable\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "currentUser",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "doctorId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "patientId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "specialty",
+			"value": "Cardiology",
+			"type": "string"
+		}
+	]
+}
