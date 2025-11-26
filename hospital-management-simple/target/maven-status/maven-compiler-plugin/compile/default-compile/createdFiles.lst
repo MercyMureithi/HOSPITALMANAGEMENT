@@ -1,0 +1,10 @@
+hospital\models\Doctor.class
+hospital\config\DataLoader.class
+hospital\models\Patient.class
+hospital\Main.class
+hospital\repository\DoctorRepository.class
+hospital\repository\AppointmentRepository.class
+hospital\service\HospitalService.class
+hospital\controller\HospitalController.class
+hospital\repository\PatientRepository.class
+hospital\models\Appointment.class
