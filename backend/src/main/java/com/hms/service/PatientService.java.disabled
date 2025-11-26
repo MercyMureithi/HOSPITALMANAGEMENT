@@ -1,0 +1,106 @@
+package com.hms.service;
+
+import com.hms.dto.PatientDTO;
+import com.hms.model.Patient;
+import com.hms.repository.PatientRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
+public class PatientService {
+    
+    private final PatientRepository patientRepository;
+    
+    public List<PatientDTO> getAllPatients() {
+        log.info("Fetching all patients");
+        List<Patient> patients = patientRepository.findAll();
+        return patients.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    public PatientDTO getPatientById(@NonNull Long id) {
+        log.info("Fetching patient with id: {}", id);
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+        return convertToDTO(patient);
+    }
+    
+    public PatientDTO createPatient(@NonNull PatientDTO patientDTO) {
+        log.info("Creating new patient with email: {}", patientDTO.getEmail());
+        
+        if (patientRepository.existsByEmail(patientDTO.getEmail())) {
+            throw new RuntimeException("Patient with email " + patientDTO.getEmail() + " already exists");
+        }
+        
+        Patient patient = convertToEntity(patientDTO);
+        Patient savedPatient = patientRepository.save(patient);
+        
+        log.info("Successfully created patient with id: {}", savedPatient.getId());
+        return convertToDTO(savedPatient);
+    }
+    
+    public PatientDTO updatePatient(@NonNull Long id, @NonNull PatientDTO patientDTO) {
+        log.info("Updating patient with id: {}", id);
+        
+        Patient existingPatient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+        
+        if (!existingPatient.getEmail().equals(patientDTO.getEmail()) && 
+            patientRepository.existsByEmail(patientDTO.getEmail())) {
+            throw new RuntimeException("Patient with email " + patientDTO.getEmail() + " already exists");
+        }
+        
+        existingPatient.setName(patientDTO.getName());
+        existingPatient.setEmail(patientDTO.getEmail());
+        existingPatient.setPhone(patientDTO.getPhone());
+        existingPatient.setDateOfBirth(patientDTO.getDateOfBirth());
+        existingPatient.setMedicalHistory(patientDTO.getMedicalHistory());
+        
+        Patient updatedPatient = patientRepository.save(existingPatient);
+        
+        log.info("Successfully updated patient with id: {}", updatedPatient.getId());
+        return convertToDTO(updatedPatient);
+    }
+    
+    public void deletePatient(@NonNull Long id) {
+        log.info("Deleting patient with id: {}", id);
+        
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+        
+        patientRepository.delete(patient);
+        log.info("Successfully deleted patient with id: {}", id);
+    }
+    
+    private PatientDTO convertToDTO(@NonNull Patient patient) {
+        return PatientDTO.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .email(patient.getEmail())
+                .phone(patient.getPhone())
+                .dateOfBirth(patient.getDateOfBirth())
+                .medicalHistory(patient.getMedicalHistory())
+                .build();
+    }
+    
+    @NonNull
+    private Patient convertToEntity(@NonNull PatientDTO patientDTO) {
+        return Patient.builder()
+                .name(patientDTO.getName())
+                .email(patientDTO.getEmail())
+                .phone(patientDTO.getPhone())
+                .dateOfBirth(patientDTO.getDateOfBirth())
+                .medicalHistory(patientDTO.getMedicalHistory())
+                .build();
+    }
+}

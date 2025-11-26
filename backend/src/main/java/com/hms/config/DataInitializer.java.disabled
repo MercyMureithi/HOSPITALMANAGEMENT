@@ -1,0 +1,195 @@
+package com.hms.config;
+
+import com.hms.model.*;
+import com.hms.repository.*;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+@RequiredArgsConstructor
+@Slf4j
+public class DataInitializer {
+    
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
+    private final PatientRepository patientRepository;
+    private final PasswordEncoder passwordEncoder;
+    
+    @Bean
+    public CommandLineRunner initializeData() {
+        return args -> {
+            log.info("Starting database initialization...");
+            
+            // Initialize roles
+            initializeRoles();
+            
+            // Initialize users
+            initializeUsers();
+            
+            // Initialize doctors
+            initializeDoctors();
+            
+            // Initialize patients
+            initializePatients();
+            
+            log.info("Database initialization completed successfully!");
+        };
+    }
+    
+    private void initializeRoles() {
+        if (roleRepository.count() == 0) {
+            log.info("Creating default roles...");
+            
+            @NonNull Role adminRole = Role.builder()
+                    .name("ADMIN")
+                    .build();
+            
+            @NonNull Role doctorRole = Role.builder()
+                    .name("DOCTOR")
+                    .build();
+            
+            @NonNull Role clerkRole = Role.builder()
+                    .name("CLERK")
+                    .build();
+            
+            @NonNull Role patientRole = Role.builder()
+                    .name("PATIENT")
+                    .build();
+            
+            roleRepository.save(adminRole);
+            roleRepository.save(doctorRole);
+            roleRepository.save(clerkRole);
+            roleRepository.save(patientRole);
+            
+            log.info("Default roles created successfully!");
+        } else {
+            log.info("Roles already exist, skipping role initialization.");
+        }
+    }
+    
+    private void initializeUsers() {
+        if (userRepository.count() == 0) {
+            log.info("Creating default users...");
+            
+            var adminRole = roleRepository.findByName("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
+            
+            var doctorRole = roleRepository.findByName("DOCTOR")
+                    .orElseThrow(() -> new RuntimeException("DOCTOR role not found"));
+            
+            var clerkRole = roleRepository.findByName("CLERK")
+                    .orElseThrow(() -> new RuntimeException("CLERK role not found"));
+            
+            @NonNull User admin = User.builder()
+                    .username("admin")
+                    .email("admin@hms.com")
+                    .password(passwordEncoder.encode("admin123"))
+                    .enabled(true)
+                    .roles(java.util.Set.of(adminRole))
+                    .build();
+            
+            @NonNull User doctor = User.builder()
+                    .username("doctor1")
+                    .email("doctor1@hms.com")
+                    .password(passwordEncoder.encode("doctor123"))
+                    .enabled(true)
+                    .roles(java.util.Set.of(doctorRole))
+                    .build();
+            
+            @NonNull User clerk = User.builder()
+                    .username("clerk1")
+                    .email("clerk1@hms.com")
+                    .password(passwordEncoder.encode("clerk123"))
+                    .enabled(true)
+                    .roles(java.util.Set.of(clerkRole))
+                    .build();
+            
+            userRepository.save(admin);
+            userRepository.save(doctor);
+            userRepository.save(clerk);
+            
+            log.info("Default users created successfully!");
+        } else {
+            log.info("Users already exist, skipping user initialization.");
+        }
+    }
+    
+    private void initializeDoctors() {
+        if (doctorRepository.count() == 0) {
+            log.info("Creating default doctors...");
+            
+            @NonNull Doctor doctor1 = Doctor.builder()
+                    .name("Dr. John Smith")
+                    .specialty("Cardiology")
+                    .licenseNumber("MD123456")
+                    .yearsOfExperience(15)
+                    .build();
+            
+            @NonNull Doctor doctor2 = Doctor.builder()
+                    .name("Dr. Sarah Johnson")
+                    .specialty("Neurology")
+                    .licenseNumber("MD789012")
+                    .yearsOfExperience(12)
+                    .build();
+            
+            @NonNull Doctor doctor3 = Doctor.builder()
+                    .name("Dr. Michael Brown")
+                    .specialty("Pediatrics")
+                    .licenseNumber("MD345678")
+                    .yearsOfExperience(8)
+                    .build();
+            
+            doctorRepository.save(doctor1);
+            doctorRepository.save(doctor2);
+            doctorRepository.save(doctor3);
+            
+            log.info("Default doctors created successfully!");
+        } else {
+            log.info("Doctors already exist, skipping doctor initialization.");
+        }
+    }
+    
+    private void initializePatients() {
+        if (patientRepository.count() == 0) {
+            log.info("Creating default patients...");
+            
+            @NonNull Patient patient1 = Patient.builder()
+                    .name("Alice Williams")
+                    .email("alice.williams@email.com")
+                    .phone("+1234567890")
+                    .dateOfBirth(java.time.LocalDate.of(1985, 5, 15))
+                    .medicalHistory("No major illnesses. Regular checkups.")
+                    .build();
+            
+            @NonNull Patient patient2 = Patient.builder()
+                    .name("Bob Davis")
+                    .email("bob.davis@email.com")
+                    .phone("+0987654321")
+                    .dateOfBirth(java.time.LocalDate.of(1990, 8, 22))
+                    .medicalHistory("Hypertension, under medication.")
+                    .build();
+            
+            @NonNull Patient patient3 = Patient.builder()
+                    .name("Carol Miller")
+                    .email("carol.miller@email.com")
+                    .phone("+1122334455")
+                    .dateOfBirth(java.time.LocalDate.of(1978, 3, 10))
+                    .medicalHistory("Diabetes Type 2, regular monitoring required.")
+                    .build();
+            
+            patientRepository.save(patient1);
+            patientRepository.save(patient2);
+            patientRepository.save(patient3);
+            
+            log.info("Default patients created successfully!");
+        } else {
+            log.info("Patients already exist, skipping patient initialization.");
+        }
+    }
+}

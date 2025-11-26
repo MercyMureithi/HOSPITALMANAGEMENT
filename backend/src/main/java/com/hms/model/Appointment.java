@@ -1,9 +1,12 @@
 package com.hms.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,6 +14,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = false)
 public class Appointment {
     
     @Id
@@ -25,13 +30,15 @@ public class Appointment {
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
     
-    @Column(nullable = false)
-    private LocalDateTime date;
+    @Column(name = "appointment_date_time", nullable = false)
+    private LocalDateTime appointmentDateTime;
     
     @Column(nullable = false)
-    private String status;
+    private String status; // SCHEDULED, COMPLETED, CANCELLED
     
-    public enum AppointmentStatus {
-        SCHEDULED, COMPLETED, CANCELLED
-    }
+    @Column(name = "reason_for_visit")
+    private String reasonForVisit;
+    
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 }

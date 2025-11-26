@@ -1,26 +1,25 @@
 # 🏥 Hospital Management System (HMS) - College Project
 
-A complete RESTful API for hospital management built with Spring Boot 3.2, featuring modern architecture, simplified structure, and a dedicated student version - perfect for college demonstrations!
+A complete RESTful API for hospital management built with Spring Boot 3.2, featuring simplified architecture and clean structure - perfect for college demonstrations!
 
 ## 🎯 Key Features
 
 - ✅ **Spring Boot 3.2** with Java 17
-- ✅ **Simplified Architecture** - DTOs consolidated in model package
+- ✅ **Simplified Architecture** - Single controller and service
+- ✅ **Consolidated Models** - DTOs in model package
 - ✅ **Null Type Safety** - @NonNull annotations throughout
 - ✅ **Zero Compilation Errors** - Clean, production-ready code
 - ✅ **SDR/SDS Compliant** - Follows software design standards
 - ✅ **H2 Database Console** - Interactive database management UI
 - ✅ **Custom HTML Dashboard** - Built-in API testing interface
 - ✅ **RESTful APIs** - Complete CRUD operations
-- ✅ **Layered Architecture** - Controller → Service → Repository
 - ✅ **Sample Data** - Automatically populated for testing
-- ✅ **Student Version** - Minimalist project included
 
 ---
 
 ## 🚀 **PROJECT STRUCTURE**
 
-### **Main Backend Project** (`/backend/`)
+### **Simplified Backend Project** (`/backend/`)
 ```
 com.hms/
 ├── Application.java              # Main entry point
@@ -33,33 +32,19 @@ com.hms/
 │   ├── Appointment.java, Bill.java # Additional entities
 │   └── LoginDTO.java, LoginResponse.java # Auth DTOs
 ├── controller/                   # REST API endpoints
-│   ├── DoctorController         # Doctor CRUD operations
-│   ├── PatientController        # Patient CRUD operations
+│   ├── HospitalController        # Single controller for all operations
 │   └── AuthController           # Authentication endpoints
 ├── service/                      # Business logic layer
-│   ├── DoctorService            # Doctor business rules
-│   └── PatientService           # Patient business rules
-└── repository/                   # Database access layer
-    ├── DoctorRepository         # Doctor data operations
-    ├── PatientRepository        # Patient data operations
-    ├── AppointmentRepository    # Appointment data operations
-    └── BillRepository           # Bill data operations
-```
-
-### **Simple Student Version** (`/hospital-management-simple/`)
-```
-hospital-management-simple/
-├── README.md                     # Student project documentation
-├── pom.xml                       # Maven configuration
-├── src/main/java/hospital/
-│   ├── Main.java                 # Simple entry point
-│   ├── models/                   # Basic data models
-│   ├── controller/               # Single REST controller
-│   ├── service/                  # Business logic
-│   ├── repository/               # Database access
-│   └── config/                   # Data initialization
-└── src/main/resources/
-    └── application.properties    # Simple configuration
+│   ├── HospitalService          # Single service for all business logic
+│   └── CustomUserDetailsService # User authentication service
+├── repository/                   # Database access layer
+│   ├── DoctorRepository         # Doctor data operations
+│   ├── PatientRepository        # Patient data operations
+│   ├── AppointmentRepository    # Appointment data operations
+│   └── BillRepository           # Bill data operations
+└── security/                     # Security components
+    ├── JwtAuthenticationFilter  # JWT token processing
+    └── JwtAuthenticationEntryPoint # Authentication error handling
 ```
 
 ---
@@ -75,7 +60,7 @@ hospital-management-simple/
 - **Repository Pattern**: Clean data access abstraction
 - **DTO Pattern**: Secure data transfer between layers
 - **MVC Pattern**: Proper separation of concerns
-- **Dependency Injection**: Spring IoC container usage
+- **Service Pattern**: Centralized business logic
 
 ### **✅ Modern Java Practices**
 - **Java 17 Features**: Modern syntax and capabilities
@@ -110,7 +95,7 @@ hospital-management-simple/
 ```
 
 **Features Available:**
-- 📊 Browse database tables (DOCTORS, PATIENTS, USERS, ROLES)
+- 📊 Browse database tables (DOCTORS, PATIENTS, APPOINTMENTS, BILLS)
 - 🔍 Execute SQL queries
 - 📝 View and edit data
 - 🗂️ Database management tools
@@ -120,16 +105,11 @@ hospital-management-simple/
 
 **🎨 Dashboard Features:**
 - 🎯 **6 Interactive Tabs** - Overview, Authentication, Doctors, Patients, Database, Postman
-- 📊 **Real-time Status Monitoring** - Server health, API count, database status, response time
-- 🔘 **Real API Testing** - All buttons make actual HTTP requests to the server
+- 📊 **Real-time Status Monitoring** - Server health, API count, database status
+- 🔘 **Real API Testing** - All buttons make actual HTTP requests
 - 📝 **Input Forms** - Create doctors/patients with custom data
 - 📋 **Live Response Display** - See JSON responses in real-time
 - 🔐 **Authentication Flow** - Login and store tokens for protected APIs
-- 🗄️ **Database Console Access** - Quick links to H2 console
-- 📮 **Postman Integration** - Complete collection import guide
-- 🎨 **Modern Responsive Design** - Professional college presentation
-- ✅ **Success/Error Notifications** - Visual feedback for all actions
-- 🔄 **Auto-refresh Status** - Server status checked every 30 seconds
 
 ### **3. 🔗 REST API Endpoints**
 🔗 **[API Status Check](http://localhost:8080/api/v1/auth/status)**
@@ -139,212 +119,18 @@ hospital-management-simple/
 🔐 Authentication APIs:
    ✅ [Auth Status](http://localhost:8080/api/v1/auth/status)
    ✅ [Login Endpoint](http://localhost:8080/api/v1/auth/login)
-   ✅ [Logout Endpoint](http://localhost:8080/api/v1/auth/logout)
 
 👨‍⚕️ Doctor Management:
-   ✅ [All Doctors](http://localhost:8080/api/v1/doctors)
-   ✅ [Create Doctor](http://localhost:8080/api/v1/doctors) (POST)
-   ✅ [Update Doctor](http://localhost:8080/api/v1/doctors/1) (PUT)
-   ✅ [Delete Doctor](http://localhost:8080/api/v1/doctors/1) (DELETE)
+   ✅ [All Doctors](http://localhost:8080/api/doctors)
+   ✅ [Create Doctor](http://localhost:8080/api/doctors) (POST)
+   ✅ [Update Doctor](http://localhost:8080/api/doctors/1) (PUT)
+   ✅ [Delete Doctor](http://localhost:8080/api/doctors/1) (DELETE)
 
 👩‍⚕️ Patient Management:
-   ✅ [All Patients](http://localhost:8080/api/v1/patients)
-   ✅ [Create Patient](http://localhost:8080/api/v1/patients) (POST)
-   ✅ [Update Patient](http://localhost:8080/api/v1/patients/1) (PUT)
-   ✅ [Delete Patient](http://localhost:8080/api/v1/patients/1) (DELETE)
-```
-
----
-
-## 📚 **STUDENT VERSION - SIMPLIFIED PROJECT**
-
-### **🎯 Perfect for Student Presentations**
-
-**Location**: `/hospital-management-simple/`
-
-**Features:**
-- 🎓 **Minimalist Structure** - Easy to understand and explain
-- 🔧 **Basic CRUD Operations** - Core functionality without complexity
-- 📊 **Sample Data** - Automatically loaded for demonstrations
-- 🌐 **Simple Configuration** - Student-friendly setup
-- ✅ **Working Application** - Fully functional out of the box
-
-**How to Run Student Version:**
-```bash
-cd hospital-management-simple
-mvn spring-boot:run
-```
-
-**Access Student Version:**
-- **API**: http://localhost:8081
-- **H2 Console**: http://localhost:8081/h2-console
-- **Endpoints**: `/api/doctors`, `/api/patients`, `/api/appointments`
-
----
-
-## 🚀 **QUICK START COMMANDS**
-
-### **Start Main Application:**
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-### **Start Student Version:**
-```bash
-cd hospital-management-simple
-mvn spring-boot:run
-```
-
-### **Check if Running:**
-```powershell
-# Test main API
-Invoke-RestMethod -Uri "http://localhost:8080/api/v1/auth/status" -Method Get
-
-# Test student API
-Invoke-RestMethod -Uri "http://localhost:8081/api/doctors" -Method Get
-```
-
----
-
-## 📮 **POSTMAN COLLECTION - COMPLETE API TESTING**
-
-### **📥 Import Complete HMS Collection:**
-
-#### **🔗 Collection File:**
-```
-📁 File: HMS-Postman-Collection.json
-📍 Location: c:\Users\HP\HOSPITALMANAGEMENT\HMS-Postman-Collection.json
-```
-
-#### **📋 Import Steps:**
-1. **Open Postman** → Click "Import" → Select "File"
-2. **Choose File**: `HMS-Postman-Collection.json`
-3. **Click "Import"** → Collection loads automatically
-4. **Environment Variables**: Auto-configured (baseUrl, authToken, etc.)
-5. **Start Testing**: All 12 endpoints ready to use!
-
-#### **🚀 Collection Features:**
-- ✅ **12 Pre-configured APIs** - All HMS endpoints
-- ✅ **Environment Variables** - baseUrl, authToken, IDs
-- ✅ **Automated Tests** - Response validation scripts
-- ✅ **Sample Data** - Pre-filled request bodies
-- ✅ **Documentation** - Detailed descriptions
-- ✅ **Error Handling** - Proper status code checks
-
-#### **📊 API Categories in Collection:**
-```
-🔐 Authentication (3 APIs):
-   ✅ Auth Status - Health Check
-   ✅ Login - User Authentication  
-   ✅ Logout - Session End
-
-👨‍⚕️ Doctor Management (6 APIs):
-   ✅ Get All Doctors
-   ✅ Create Doctor
-   ✅ Get Doctor by ID
-   ✅ Update Doctor
-   ✅ Delete Doctor
-   ✅ Get Doctors by Specialty
-
-👩‍⚕️ Patient Management (5 APIs):
-   ✅ Get All Patients
-   ✅ Create Patient
-   ✅ Get Patient by ID
-   ✅ Update Patient
-   ✅ Delete Patient
-```
-
----
-
-## 🔧 **HOW TO ACCESS EACH COMPONENT**
-
-### **📋 Step-by-Step Access Guide:**
-
-#### **Step 1: Database Console Access**
-1. **Click**: [H2 Console](http://localhost:8080/h2-console)
-2. **Enter Login Details**:
-   - JDBC URL: `jdbc:h2:mem:hospitaldb`
-   - Username: `sa`
-   - Password: (leave blank)
-3. **Click "Connect"**
-4. **You can now**: Browse tables, run SQL queries, view data
-
-#### **Step 2: Enhanced Dashboard Access**
-1. **Click**: [HMS Enhanced Dashboard](http://localhost:8080/index.html)
-2. **Navigate through 6 tabs**:
-   - **📊 Overview** - Project stats and quick actions
-   - **🔐 Authentication** - Test login/logout endpoints
-   - **👨‍⚕️ Doctors** - Test doctor management APIs
-   - **👩‍⚕️ Patients** - Test patient management APIs
-   - **🗄️ Database** - Quick H2 console access
-   - **📮 Postman** - Import guide and collection
-3. **Use interactive buttons** to test APIs
-4. **View live responses** in the response area
-
-#### **Step 3: Postman Collection Access**
-1. **Open Postman** → Import → File
-2. **Select**: `HMS-Postman-Collection.json`
-3. **Import** → All 12 endpoints ready
-4. **Test with authentication** - Login first, then test protected endpoints
-
-#### **Step 4: API Testing (Direct)**
-1. **Public APIs** - Work directly without authentication:
-   - [Auth Status](http://localhost:8080/api/v1/auth/status)
-   - [Login](http://localhost:8080/api/v1/auth/login)
-2. **Protected APIs** - Require authentication (use Postman or dashboard):
-   - [Doctors API](http://localhost:8080/api/v1/doctors) - 403 without auth
-   - [Patients API](http://localhost:8080/api/v1/patients) - 403 without auth
-
----
-
-## 🎓 **COLLEGE PROJECT DEMONSTRATION GUIDE**
-
-### **📊 Presentation Sequence:**
-
-#### **1. Show Database Management**
-- **Open**: [H2 Console](http://localhost:8080/h2-console)
-- **Demonstrate**: Table browsing, SQL queries
-- **Explain**: JPA entities and relationships
-
-#### **2. Show API Functionality**
-- **Open**: [HMS Dashboard](http://localhost:8080/index.html) OR Postman
-- **Test**: Authentication endpoints
-- **Demonstrate**: CRUD operations
-- **Show**: JSON responses and status codes
-
-#### **3. Show Security Implementation**
-- **Explain**: @PreAuthorize annotations in code
-- **Demonstrate**: Role-based access control
-- **Show**: Spring Security configuration
-
----
-
-## 📱 **ALTERNATIVE ACCESS METHODS**
-
-### **If Browser Links Don't Work:**
-
-#### **Method 1: Copy-Paste URLs**
-```
-1. H2 Console: http://localhost:8080/h2-console
-2. Dashboard:   http://localhost:8080/index.html
-3. API Status:  http://localhost:8080/api/v1/auth/status
-```
-
-#### **Method 2: PowerShell Commands**
-```powershell
-# Test API status
-Invoke-RestMethod -Uri "http://localhost:8080/api/v1/auth/status" -Method Get
-
-# Test H2 console (should return HTML)
-Invoke-WebRequest -Uri "http://localhost:8080/h2-console" -Method Get
-```
-
-#### **Method 3: curl Commands**
-```bash
-# Test API endpoints
-curl http://localhost:8080/api/v1/auth/status
-curl http://localhost:8080/api/v1/doctors
+   ✅ [All Patients](http://localhost:8080/api/patients)
+   ✅ [Create Patient](http://localhost:8080/api/patients) (POST)
+   ✅ [Update Patient](http://localhost:8080/api/patients/1) (PUT)
+   ✅ [Delete Patient](http://localhost:8080/api/patients/1) (DELETE)
 ```
 
 ---
@@ -368,27 +154,49 @@ Invoke-WebRequest -Uri "http://localhost:8080/h2-console" -Method Head
 
 ---
 
+## 🎓 **COLLEGE PROJECT DEMONSTRATION GUIDE**
+
+### **📊 Presentation Sequence:**
+
+#### **1. Show Simplified Architecture**
+- **Explain**: Single controller and service for all operations
+- **Demonstrate**: Consolidated model structure with DTOs
+- **Highlight**: Clean, maintainable code organization
+
+#### **2. Show Database Management**
+- **Open**: [H2 Console](http://localhost:8080/h2-console)
+- **Demonstrate**: Sample data (8 doctors, 10 patients, 8 appointments, 8 bills)
+- **Explain**: JPA entities and relationships
+
+#### **3. Show API Functionality**
+- **Open**: [HMS Dashboard](http://localhost:8080/index.html)
+- **Test**: Simplified CRUD endpoints
+- **Demonstrate**: Error handling and validation
+
+---
+
 ## 🎯 **PROJECT HIGHLIGHTS FOR GRADING**
 
 ### **✅ Technical Excellence:**
 - Modern Spring Boot 3.2 with Java 17
-- Spring Security 6.1+ with proper RBAC
-- Clean architecture with proper layer separation
-- DTO pattern for secure data transfer
-- Comprehensive error handling
+- Simplified architecture with single controller/service
+- Consolidated model structure
+- Null type safety with @NonNull annotations
+- Zero compilation errors and warnings
+- SDR/SDS compliant design
 
 ### **✅ Educational Value:**
-- Demonstrates enterprise-level development
-- Shows security best practices
+- Demonstrates clean architecture principles
+- Shows software engineering best practices
 - Includes database management UI
-- Complete CRUD operations
+- Complete CRUD operations with validation
 - Production-ready code quality
 
 ### **✅ Demonstration Ready:**
 - Multiple UI access points
 - Interactive testing capabilities
-- Clear documentation
-- Working database console
+- Comprehensive documentation
+- Working sample data
 - Professional presentation
 
 ---
@@ -396,7 +204,7 @@ Invoke-WebRequest -Uri "http://localhost:8080/h2-console" -Method Head
 ## 📞 **TROUBLESHOOTING**
 
 ### **If Links Don't Work:**
-1. **Check**: Application is running (Process ID: 31368)
+1. **Check**: Application is running on correct port
 2. **Verify**: Port 8080 is available
 3. **Test**: [API Status](http://localhost:8080/api/v1/auth/status)
 4. **Restart**: If needed, use `mvn spring-boot:run`
@@ -414,22 +222,21 @@ This HMS project provides:
 - 🗄️ **Interactive Database UI** - H2 Console with sample data
 - 📱 **Modern Web Dashboard** - Custom HTML Interface  
 - 🔗 **Complete REST APIs** - All CRUD operations with validation
-- 🎓 **Student Version** - Simplified project for basic demos
 - 📚 **Educational Value** - Enterprise architecture patterns
 - ✅ **SDR/SDS Compliance** - Professional software design standards
 
-**🏥 Your Hospital Management System is fully operational with both enterprise and student versions! Perfect for impressing your instructors!** 🚀📚
+**🏥 Your Hospital Management System is fully operational with simplified architecture! Perfect for impressing your instructors!** 🚀📚
 
 ---
 
 ## 📝 **RECENT IMPROVEMENTS**
 
 ### **Latest Updates (v2.0):**
-- ✅ **Consolidated DTOs** - Moved from separate package to model package
+- ✅ **Simplified Architecture** - Single controller and service
+- ✅ **Consolidated DTOs** - Moved to model package
 - ✅ **Null Safety** - Added @NonNull annotations throughout codebase
 - ✅ **Fixed Imports** - All import statements updated correctly
 - ✅ **Zero Errors** - All compilation errors and warnings resolved
-- ✅ **Student Version** - Created simplified project structure
 - ✅ **Enhanced Documentation** - Comprehensive README and code comments
 - ✅ **Sample Data** - Automatically populated database for testing
 - ✅ **SDR/SDS Compliance** - Meets software design requirements and specifications

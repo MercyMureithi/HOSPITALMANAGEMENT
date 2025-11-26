@@ -1,7 +1,7 @@
 package com.hms.controller;
 
-import com.hms.dto.LoginDTO;
-import com.hms.dto.LoginResponse;
+import com.hms.model.LoginDTO;
+import com.hms.model.LoginResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Server is picking up changes - " + System.currentTimeMillis());
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginDTO loginRequest) {

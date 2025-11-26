@@ -25,13 +25,22 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
 
-jwt:
-  secret: mySecretKey123456789012345678901234567890
-  expirationMs: 86400000
+# JWT Configuration
+app:
+  jwt-secret: mySecretKey123456789012345678901234567890
+  jwt-expiration: 86400000 # 24 hours
 
+# Swagger/OpenAPI Configuration
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+# Logging Configuration
+logging:
+  level:
+    com.hms: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
