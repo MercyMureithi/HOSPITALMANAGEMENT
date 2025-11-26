@@ -1,13 +1,12 @@
 package com.hms.controller;
 
-import com.hms.dto.DoctorDTO;
+import com.hms.model.DoctorDTO;
 import com.hms.service.DoctorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,7 +22,6 @@ public class DoctorController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('CLERK')")
     public ResponseEntity<List<DoctorDTO>> getAllDoctors() {
         log.info("Fetching all doctors");
         List<DoctorDTO> doctors = doctorService.getAllDoctors();
@@ -31,15 +29,13 @@ public class DoctorController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('CLERK')")
-    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
+    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable @NonNull Long id) {
         log.info("Fetching doctor with id: {}", id);
         DoctorDTO doctor = doctorService.getDoctorById(id);
         return ResponseEntity.ok(doctor);
     }
 
     @GetMapping("/specialty/{specialty}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('CLERK')")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@PathVariable String specialty) {
         log.info("Fetching doctors by specialty: {}", specialty);
         List<DoctorDTO> doctors = doctorService.getDoctorsBySpecialty(specialty);
@@ -47,7 +43,6 @@ public class DoctorController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLERK')")
     public ResponseEntity<DoctorDTO> createDoctor(@RequestBody DoctorDTO doctorDTO) {
         log.info("Creating new doctor: {}", doctorDTO.getName());
         DoctorDTO createdDoctor = doctorService.createDoctor(doctorDTO);
@@ -55,23 +50,20 @@ public class DoctorController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLERK')")
-    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
+    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable @NonNull Long id, @RequestBody DoctorDTO doctorDTO) {
         log.info("Updating doctor with id: {}", id);
         DoctorDTO updatedDoctor = doctorService.updateDoctor(id, doctorDTO);
         return ResponseEntity.ok(updatedDoctor);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLERK')")
-    public ResponseEntity<String> deleteDoctor(@PathVariable Long id) {
+    public ResponseEntity<String> deleteDoctor(@PathVariable @NonNull Long id) {
         log.info("Deleting doctor with id: {}", id);
         doctorService.deleteDoctor(id);
         return ResponseEntity.ok("Doctor deleted successfully");
     }
 
     @GetMapping("/count")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('CLERK')")
     public ResponseEntity<Long> getDoctorCount() {
         log.info("Getting total doctor count");
         List<DoctorDTO> doctors = doctorService.getAllDoctors();

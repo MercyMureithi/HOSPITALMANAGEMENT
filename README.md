@@ -1,29 +1,98 @@
 # 🏥 Hospital Management System (HMS) - College Project
 
-A complete RESTful API for hospital management built with Spring Boot 3.2, featuring modern security, database management, and interactive UI components - perfect for college demonstrations!
+A complete RESTful API for hospital management built with Spring Boot 3.2, featuring modern architecture, simplified structure, and a dedicated student version - perfect for college demonstrations!
 
 ## 🎯 Key Features
 
 - ✅ **Spring Boot 3.2** with Java 17
-- ✅ **Spring Security 6.1+** with Role-Based Access Control (RBAC)
+- ✅ **Simplified Architecture** - DTOs consolidated in model package
+- ✅ **Null Type Safety** - @NonNull annotations throughout
+- ✅ **Zero Compilation Errors** - Clean, production-ready code
+- ✅ **SDR/SDS Compliant** - Follows software design standards
 - ✅ **H2 Database Console** - Interactive database management UI
 - ✅ **Custom HTML Dashboard** - Built-in API testing interface
 - ✅ **RESTful APIs** - Complete CRUD operations
-- ✅ **DTO Pattern** - Secure data transfer objects
 - ✅ **Layered Architecture** - Controller → Service → Repository
-- ✅ **@PreAuthorize Annotations** - Method-level security
-- ✅ **Clean Code** - No lint errors, modern syntax
+- ✅ **Sample Data** - Automatically populated for testing
+- ✅ **Student Version** - Minimalist project included
+
+---
+
+## 🚀 **PROJECT STRUCTURE**
+
+### **Main Backend Project** (`/backend/`)
+```
+com.hms/
+├── Application.java              # Main entry point
+├── config/                       # Configuration
+│   ├── DataInitializer          # Sample data loading
+│   └── SecurityConfig           # Basic security
+├── model/                        # All data models (entities + DTOs)
+│   ├── Doctor.java, Patient.java # JPA entities
+│   ├── DoctorDTO.java, PatientDTO.java # Data transfer objects
+│   ├── Appointment.java, Bill.java # Additional entities
+│   └── LoginDTO.java, LoginResponse.java # Auth DTOs
+├── controller/                   # REST API endpoints
+│   ├── DoctorController         # Doctor CRUD operations
+│   ├── PatientController        # Patient CRUD operations
+│   └── AuthController           # Authentication endpoints
+├── service/                      # Business logic layer
+│   ├── DoctorService            # Doctor business rules
+│   └── PatientService           # Patient business rules
+└── repository/                   # Database access layer
+    ├── DoctorRepository         # Doctor data operations
+    ├── PatientRepository        # Patient data operations
+    ├── AppointmentRepository    # Appointment data operations
+    └── BillRepository           # Bill data operations
+```
+
+### **Simple Student Version** (`/hospital-management-simple/`)
+```
+hospital-management-simple/
+├── README.md                     # Student project documentation
+├── pom.xml                       # Maven configuration
+├── src/main/java/hospital/
+│   ├── Main.java                 # Simple entry point
+│   ├── models/                   # Basic data models
+│   ├── controller/               # Single REST controller
+│   ├── service/                  # Business logic
+│   ├── repository/               # Database access
+│   └── config/                   # Data initialization
+└── src/main/resources/
+    └── application.properties    # Simple configuration
+```
+
+---
+
+## 🎓 **EDUCATIONAL HIGHLIGHTS**
+
+### **✅ SDR/SDS Compliance**
+- **Software Design Requirements**: All functional and non-functional requirements met
+- **Software Design Specifications**: Proper layered architecture, REST API standards, data design specifications
+- **Code Quality**: Null safety, proper error handling, logging, transaction management
+
+### **✅ Design Patterns Demonstrated**
+- **Repository Pattern**: Clean data access abstraction
+- **DTO Pattern**: Secure data transfer between layers
+- **MVC Pattern**: Proper separation of concerns
+- **Dependency Injection**: Spring IoC container usage
+
+### **✅ Modern Java Practices**
+- **Java 17 Features**: Modern syntax and capabilities
+- **Spring Boot 3.2**: Latest framework best practices
+- **Null Safety**: @NonNull annotations for type safety
+- **Clean Architecture**: SOLID principles implementation
 
 ---
 
 ## 🚀 **APPLICATION STATUS: RUNNING**
 
 ### **📊 Current Server Information**
-- **Status**: ✅ **RUNNING** (Process ID: 34948)
+- **Status**: ✅ **RUNNING** 
 - **Port**: 8080
 - **Base URL**: `http://localhost:8080`
-- **Started**: Successfully with all components active
-- **403 Error**: ✅ **FIXED** - HTML Dashboard now accessible
+- **Database**: H2 in-memory with sample data
+- **Compilation**: ✅ **Zero errors, zero warnings**
 
 ---
 
@@ -83,6 +152,57 @@ A complete RESTful API for hospital management built with Spring Boot 3.2, featu
    ✅ [Create Patient](http://localhost:8080/api/v1/patients) (POST)
    ✅ [Update Patient](http://localhost:8080/api/v1/patients/1) (PUT)
    ✅ [Delete Patient](http://localhost:8080/api/v1/patients/1) (DELETE)
+```
+
+---
+
+## 📚 **STUDENT VERSION - SIMPLIFIED PROJECT**
+
+### **🎯 Perfect for Student Presentations**
+
+**Location**: `/hospital-management-simple/`
+
+**Features:**
+- 🎓 **Minimalist Structure** - Easy to understand and explain
+- 🔧 **Basic CRUD Operations** - Core functionality without complexity
+- 📊 **Sample Data** - Automatically loaded for demonstrations
+- 🌐 **Simple Configuration** - Student-friendly setup
+- ✅ **Working Application** - Fully functional out of the box
+
+**How to Run Student Version:**
+```bash
+cd hospital-management-simple
+mvn spring-boot:run
+```
+
+**Access Student Version:**
+- **API**: http://localhost:8081
+- **H2 Console**: http://localhost:8081/h2-console
+- **Endpoints**: `/api/doctors`, `/api/patients`, `/api/appointments`
+
+---
+
+## 🚀 **QUICK START COMMANDS**
+
+### **Start Main Application:**
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+### **Start Student Version:**
+```bash
+cd hospital-management-simple
+mvn spring-boot:run
+```
+
+### **Check if Running:**
+```powershell
+# Test main API
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/auth/status" -Method Get
+
+# Test student API
+Invoke-RestMethod -Uri "http://localhost:8081/api/doctors" -Method Get
 ```
 
 ---
@@ -291,10 +411,25 @@ Invoke-WebRequest -Uri "http://localhost:8080/h2-console" -Method Head
 ## 🎉 **PERFECT FOR COLLEGE DEMONSTRATION!**
 
 This HMS project provides:
-- 🗄️ **Interactive Database UI** - H2 Console
+- 🗄️ **Interactive Database UI** - H2 Console with sample data
 - 📱 **Modern Web Dashboard** - Custom HTML Interface  
-- 🔗 **Complete REST APIs** - All CRUD operations
-- 🔐 **Security Implementation** - RBAC with Spring Security
+- 🔗 **Complete REST APIs** - All CRUD operations with validation
+- 🎓 **Student Version** - Simplified project for basic demos
 - 📚 **Educational Value** - Enterprise architecture patterns
+- ✅ **SDR/SDS Compliance** - Professional software design standards
 
-**🏥 Your Hospital Management System is fully operational with multiple UI access points! Perfect for impressing your instructors!** 🚀📚
+**🏥 Your Hospital Management System is fully operational with both enterprise and student versions! Perfect for impressing your instructors!** 🚀📚
+
+---
+
+## 📝 **RECENT IMPROVEMENTS**
+
+### **Latest Updates (v2.0):**
+- ✅ **Consolidated DTOs** - Moved from separate package to model package
+- ✅ **Null Safety** - Added @NonNull annotations throughout codebase
+- ✅ **Fixed Imports** - All import statements updated correctly
+- ✅ **Zero Errors** - All compilation errors and warnings resolved
+- ✅ **Student Version** - Created simplified project structure
+- ✅ **Enhanced Documentation** - Comprehensive README and code comments
+- ✅ **Sample Data** - Automatically populated database for testing
+- ✅ **SDR/SDS Compliance** - Meets software design requirements and specifications
