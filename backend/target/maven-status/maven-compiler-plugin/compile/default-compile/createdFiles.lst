@@ -11,6 +11,7 @@ com\hms\repository\AppointmentRepository.class
 com\hms\repository\RoleRepository.class
 com\hms\model\Patient$PatientBuilder.class
 com\hms\service\HospitalService.class
+com\hms\controller\HospitalController.class
 com\hms\Application.class
 com\hms\controller\AuthController.class
 com\hms\model\Appointment.class
