@@ -17,24 +17,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     
-    // For college project - simplified JWT filter
-    // In real project, you would inject JwtTokenProvider and UserDetailsService
+    // I kept this simple for the college demo - security is disabled anyway
+    // In a real hospital app, this would be super important for patient privacy!
     
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, 
                                   @NonNull HttpServletResponse response, 
                                   @NonNull FilterChain filterChain) throws ServletException, IOException {
         
-        // For college project simplicity, we'll skip actual JWT validation
-        // and just set up basic authentication context
+        // Since we disabled security for the demo, this just logs the request
+        // Took me forever to figure out I could just disable security entirely!
         log.info("JWT Filter processing request: {}", request.getRequestURI());
         
-        // In a real implementation, you would:
-        // 1. Extract JWT from header
-        // 2. Validate token
-        // 3. Load user from token
-        // 4. Set authentication context
+        // If this was a real hospital system, I would:
+        // 1. Get the JWT token from the Authorization header
+        // 2. Check if the token is valid (not expired, correct signature)
+        // 3. Load the doctor/patient user info from the token
+        // 4. Make sure they can only access their own data!
         
+        // For now, just let everything through - much easier for college demo
         filterChain.doFilter(request, response);
     }
 }

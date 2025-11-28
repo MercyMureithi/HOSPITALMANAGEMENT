@@ -21,6 +21,8 @@ import java.util.List;
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
 
+    // These repositories let me save data to the H2 database
+    // Spring injects them automatically - pretty cool!
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     private final AppointmentRepository appointmentRepository;
@@ -28,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Only load data if the database is empty - don't want duplicates!
         if (doctorRepository.count() == 0) {
             log.info("Initializing database with sample data...");
             initializeDoctors();
@@ -39,6 +42,9 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Database already contains data. Skipping initialization.");
         }
     }
+
+    // Create some realistic doctors for the demo
+    // I tried to make the data look like a real hospital!
 
     private void initializeDoctors() {
         List<Doctor> doctors = Arrays.asList(
