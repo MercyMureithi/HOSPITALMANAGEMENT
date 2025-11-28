@@ -250,7 +250,7 @@
             const yearsOfExperience = document.getElementById("doctorExperience").value;
             const doctorData = { name: name, specialty: specialty, licenseNumber: licenseNumber, yearsOfExperience: parseInt(yearsOfExperience) || 5 };
             try {
-                const response = await fetch(API_BASE + "/api/v1/doctors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(doctorData) });
+                const response = await fetch(API_BASE + "/api/doctors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(doctorData) });
                 let data;
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
@@ -297,7 +297,7 @@
         
         async function loadDoctors() {
             try {
-                const response = await fetch(API_BASE + "/api/v1/doctors");
+                const response = await fetch(API_BASE + "/api/doctors");
                 let data;
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
@@ -328,7 +328,7 @@
             const medicalHistory = document.getElementById("patientHistory").value;
             const patientData = { name: name, email: email, phone: phone, dateOfBirth: dateOfBirth || "1990-01-01", medicalHistory: medicalHistory || "No medical history recorded" };
             try {
-                const response = await fetch(API_BASE + "/api/v1/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(patientData) });
+                const response = await fetch(API_BASE + "/api/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(patientData) });
                 const data = await response.json();
                 if (response.status === 200 || response.status === 201) {
                     showSuccessMessage("✅ Patient '" + name + "' added successfully!");
@@ -348,7 +348,7 @@
         
         async function loadPatients() {
             try {
-                const response = await fetch(API_BASE + "/api/v1/patients");
+                const response = await fetch(API_BASE + "/api/patients");
                 const data = await response.json();
                 if (response.status === 200) {
                     patients = Array.isArray(data) ? data : [];

@@ -2,35 +2,26 @@ package com.hms.service;
 
 import com.hms.model.Doctor;
 import com.hms.model.Patient;
-import com.hms.model.Appointment;
 import com.hms.model.DoctorDTO;
 import com.hms.model.PatientDTO;
 import com.hms.repository.DoctorRepository;
 import com.hms.repository.PatientRepository;
-import com.hms.repository.AppointmentRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Simple Hospital Service - Handles all business logic
- */
+// Main service for hospital operations
 @Service
-@Transactional
 public class HospitalService {
 
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
-    private final AppointmentRepository appointmentRepository;
 
     public HospitalService(DoctorRepository doctorRepository, 
-                          PatientRepository patientRepository,
-                          AppointmentRepository appointmentRepository) {
+                          PatientRepository patientRepository) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
-        this.appointmentRepository = appointmentRepository;
     }
 
     // Doctor operations
