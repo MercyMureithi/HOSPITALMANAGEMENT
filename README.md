@@ -42,6 +42,8 @@ Database initialization completed!
 ```
 
 5. Test it in your browser:
+- **Frontend Dashboard**: http://localhost:8080/ (Interactive web interface!)
+- **Swagger API Docs**: http://localhost:8080/swagger-ui.html (Professional API documentation)
 - Check if it's working: http://localhost:8080/api/v1/auth/status
 - See all doctors: http://localhost:8080/api/doctors
 - See all patients: http://localhost:8080/api/patients
@@ -140,10 +142,11 @@ You can see all this in the H2 console!
 ## Good for College Demo
 
 ### What to Show Your Lecturer:
-1. **Simple code structure** - Easy to explain how it works
-2. **Database management** - Show the H2 console with data
-3. **API testing** - Demonstrate adding/viewing doctors and patients
-4. **Spring Boot features** - Auto-configuration, dependency injection
+1. **Interactive Frontend** - Beautiful dashboard at http://localhost:8080/ 
+2. **Swagger API Documentation** - Professional API docs at http://localhost:8080/swagger-ui.html
+3. **Database management** - Show the H2 console with real data
+4. **API testing** - Use Swagger to test adding/viewing doctors and patients live
+5. **Spring Boot features** - Auto-configuration, dependency injection, clean architecture
 
 ### Things to Mention:
 - "Used Spring Boot to build this quickly"

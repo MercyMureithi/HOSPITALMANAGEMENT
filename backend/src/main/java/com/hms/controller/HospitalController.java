@@ -3,12 +3,16 @@ package com.hms.controller;
 import com.hms.model.DoctorDTO;
 import com.hms.model.PatientDTO;
 import com.hms.service.HospitalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Hospital Management API", description = "APIs for managing doctors and patients in the hospital system")
 public class HospitalController {
 
     private final HospitalService hospitalService;
@@ -20,54 +24,64 @@ public class HospitalController {
 
     // Doctor endpoints - I kept these separate from patients for clarity
     @GetMapping("/doctors")
+    @Operation(summary = "Get all doctors", description = "Retrieve a list of all doctors in the hospital")
     public List<DoctorDTO> getAllDoctors() {
         return hospitalService.getAllDoctors();
     }
 
     @GetMapping("/doctors/{id}")
-    public DoctorDTO getDoctorById(@PathVariable Long id) {
+    @Operation(summary = "Get doctor by ID", description = "Find a specific doctor by their ID")
+    public DoctorDTO getDoctorById(@Parameter(description = "Doctor ID") @PathVariable Long id) {
         return hospitalService.getDoctorById(id);
     }
 
     @PostMapping("/doctors")
-    public DoctorDTO createDoctor(@RequestBody DoctorDTO doctorDTO) {
+    @Operation(summary = "Add new doctor", description = "Create a new doctor record in the system")
+    public DoctorDTO createDoctor(@Parameter(description = "Doctor data") @RequestBody DoctorDTO doctorDTO) {
         return hospitalService.createDoctor(doctorDTO);
     }
 
     @PutMapping("/doctors/{id}")
-    public DoctorDTO updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
+    @Operation(summary = "Update doctor", description = "Update existing doctor information")
+    public DoctorDTO updateDoctor(@Parameter(description = "Doctor ID") @PathVariable Long id, @Parameter(description = "Updated doctor data") @RequestBody DoctorDTO doctorDTO) {
         return hospitalService.updateDoctor(id, doctorDTO);
     }
 
     @DeleteMapping("/doctors/{id}")
-    public String deleteDoctor(@PathVariable Long id) {
+    @Operation(summary = "Delete doctor", description = "Remove a doctor from the system")
+    public String deleteDoctor(@Parameter(description = "Doctor ID") @PathVariable Long id) {
         hospitalService.deleteDoctor(id);
         return "Doctor deleted successfully";
     }
 
     // Patient endpoints
     @GetMapping("/patients")
+    @Operation(summary = "Get all patients", description = "Retrieve a list of all patients in the hospital")
     public List<PatientDTO> getAllPatients() {
         return hospitalService.getAllPatients();
     }
 
     @GetMapping("/patients/{id}")
-    public PatientDTO getPatientById(@PathVariable Long id) {
+    @Operation(summary = "Get patient by ID", description = "Find a specific patient by their ID")
+    public PatientDTO getPatientById(@Parameter(description = "Patient ID") @PathVariable Long id) {
         return hospitalService.getPatientById(id);
     }
 
     @PostMapping("/patients")
-    public PatientDTO createPatient(@RequestBody PatientDTO patientDTO) {
+    @Operation(summary = "Add new patient", description = "Create a new patient record in the system")
+    public PatientDTO createPatient(@Parameter(description = "Patient data") @RequestBody PatientDTO patientDTO) {
         return hospitalService.createPatient(patientDTO);
     }
 
     @PutMapping("/patients/{id}")
-    public PatientDTO updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDTO) {
+    @Operation(summary = "Update patient", description = "Update existing patient information")
+    public PatientDTO updatePatient(@Parameter(description = "Patient ID") @PathVariable Long id, @Parameter(description = "Updated patient data") @RequestBody PatientDTO patientDTO) {
         return hospitalService.updatePatient(id, patientDTO);
     }
 
     @DeleteMapping("/patients/{id}")
-    public String deletePatient(@PathVariable Long id) {
+    @Operation(summary = "Delete patient", description = "Remove a patient from the system")
+    public String deletePatient(@Parameter(description = "Patient ID") @PathVariable Long id) {
         hospitalService.deletePatient(id);
         return "Patient deleted successfully";
     }
