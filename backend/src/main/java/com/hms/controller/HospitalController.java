@@ -13,11 +13,12 @@ public class HospitalController {
 
     private final HospitalService hospitalService;
 
+    // Constructor injection - Spring handles this automatically
     public HospitalController(HospitalService hospitalService) {
         this.hospitalService = hospitalService;
     }
 
-    // Doctor endpoints
+    // Doctor endpoints - I kept these separate from patients for clarity
     @GetMapping("/doctors")
     public List<DoctorDTO> getAllDoctors() {
         return hospitalService.getAllDoctors();
