@@ -2,6 +2,8 @@ package com.hms.controller;
 
 import com.hms.model.DoctorDTO;
 import com.hms.model.PatientDTO;
+import com.hms.model.AppointmentDTO;
+import com.hms.model.BillDTO;
 import com.hms.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,5 +86,57 @@ public class HospitalController {
     public String deletePatient(@Parameter(description = "Patient ID") @PathVariable Long id) {
         hospitalService.deletePatient(id);
         return "Patient deleted successfully";
+    }
+
+    // Appointment endpoints
+    @GetMapping("/appointments")
+    @Operation(summary = "Get all appointments", description = "Retrieve a list of all appointments in the hospital")
+    public List<AppointmentDTO> getAllAppointments() {
+        return hospitalService.getAllAppointments();
+    }
+
+    @GetMapping("/appointments/{id}")
+    @Operation(summary = "Get appointment by ID", description = "Find a specific appointment by their ID")
+    public AppointmentDTO getAppointmentById(@Parameter(description = "Appointment ID") @PathVariable Long id) {
+        return hospitalService.getAppointmentById(id);
+    }
+
+    @PostMapping("/appointments")
+    @Operation(summary = "Add new appointment", description = "Create a new appointment record in the system")
+    public AppointmentDTO createAppointment(@Parameter(description = "Appointment data") @RequestBody AppointmentDTO appointmentDTO) {
+        return hospitalService.createAppointment(appointmentDTO);
+    }
+
+    @DeleteMapping("/appointments/{id}")
+    @Operation(summary = "Delete appointment", description = "Remove an appointment from the system")
+    public String deleteAppointment(@Parameter(description = "Appointment ID") @PathVariable Long id) {
+        hospitalService.deleteAppointment(id);
+        return "Appointment deleted successfully";
+    }
+
+    // Billing endpoints
+    @GetMapping("/bills")
+    @Operation(summary = "Get all bills", description = "Retrieve a list of all bills in the hospital")
+    public List<BillDTO> getAllBills() {
+        return hospitalService.getAllBills();
+    }
+
+    @GetMapping("/bills/{id}")
+    @Operation(summary = "Get bill by ID", description = "Find a specific bill by their ID")
+    public BillDTO getBillById(@Parameter(description = "Bill ID") @PathVariable Long id) {
+        return hospitalService.getBillById(id);
+    }
+
+    @PostMapping("/bills")
+    @Operation(summary = "Add new bill", description = "Create a new bill record in the system")
+    public BillDTO createBill(@Parameter(description = "Bill data") @RequestBody BillDTO billDTO) {
+        return hospitalService.createBill(billDTO);
+    }
+
+    @DeleteMapping("/bills/{id}")
+    @Operation(summary = "Delete bill", description = "Remove a bill from the system")
+    public String deleteBill(@Parameter(description = "Bill ID") @PathVariable Long id) {
+        hospitalService.deleteBill(id);
+        return "Bill deleted successfully";
     }
 }
