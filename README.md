@@ -6,7 +6,7 @@ My final year college project for managing hospital data. I built this using Spr
 
 - **Spring Boot 3.2** with Java 17 (took me forever to set this up properly)
 - **Simple setup** - I tried to keep it in one controller to make it easier to follow
-- **Single service class** - Put all the main logic together instead of spreading it everywhere  
+- **Single service class** - Put all the main logic together instead of spreading it everywhere
 - **H2 Database** - Used this because MySQL was giving me connection issues
 - **Sample data** - Added some fake doctors and patients so you can see it working immediately
 - **Basic CRUD operations** - You can add, view, update, delete doctors and patients
@@ -16,37 +16,57 @@ My final year college project for managing hospital data. I built this using Spr
 ## How to Run This Thing
 
 ### What You Need First
+
 - **Java 17** or newer (make sure you don't have Java 8 installed - that caused me so many problems)
 - **Maven** (or just use the wrapper I included - much easier)
 
 ### Get Started
+
 1. Open command prompt/terminal (I used PowerShell but regular cmd works too)
 2. Go to the backend folder:
+
 ```bash
 cd backend
 ```
 
 3. Run the application:
+
 ```bash
 # Use this if you don't have Maven installed
-.\mvnw.cmd spring-boot:run
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8081"
 
 # OR use this if you have Maven
 mvn spring-boot:run
 ```
 
 4. Wait until you see something like:
+
 ```
 Started Application in 3.456 seconds
 Database initialization completed!
 ```
 
 5. Test it in your browser:
-- **Frontend Dashboard**: http://localhost:8080/ (Interactive web interface!)
-- **Swagger API Docs**: http://localhost:8080/swagger-ui.html (Professional API documentation)
-- Check if it's working: http://localhost:8080/api/v1/auth/status
-- See all doctors: http://localhost:8080/api/doctors
-- See all patients: http://localhost:8080/api/patients
+- **Frontend Dashboard**: http://localhost:8081/ (Interactive web interface!)
+- **Patient Portal**: http://localhost:8081/login.html (Patient login & appointment booking)
+- **Swagger API Docs**: http://localhost:8081/swagger-ui.html (Professional API documentation)
+- Check if it's working: http://localhost:8081/api/v1/auth/status
+- See all doctors: http://localhost:8081/api/doctors
+- See all patients: http://localhost:8081/api/patients
+
+### 🏥 Patient Portal Features
+- **Login System**: Patients can login using their email
+- **Demo Login**: Quick access without password for testing
+- **Appointment Booking**: Book appointments with available doctors
+- **Appointment History**: View all booked appointments
+- **Patient Profile**: View personal medical information
+- **Logout**: Secure logout functionality
+
+### How to Use Patient Portal:
+1. Go to http://localhost:8081/login.html
+2. Click "Demo Login" for quick access OR enter patient email
+3. Book appointments by selecting doctor, date, and reason
+4. View your appointment history and profile
 
 If you get any errors, try restarting your terminal - that fixed most of my issues!
 
@@ -55,6 +75,7 @@ If you get any errors, try restarting your terminal - that fixed most of my issu
 ## Database Stuff
 
 ### H2 Console (Web Database Interface)
+
 1. Go to: http://localhost:8080/h2-console
 2. Login with these details:
    - **JDBC URL**: `jdbc:h2:mem:hospitaldb`
@@ -98,17 +119,20 @@ backend/
 ## API Endpoints You Can Use
 
 ### Authentication Stuff
+
 - `GET /api/v1/auth/status` - Check if server is running
 - `POST /api/v1/auth/login` - Basic login (I kept it simple)
 
 ### Doctor Management
+
 - `GET /api/doctors` - Get all doctors
 - `GET /api/doctors/{id}` - Get specific doctor
 - `POST /api/doctors` - Add new doctor
 - `PUT /api/doctors/{id}` - Update doctor info
 - `DELETE /api/doctors/{id}` - Remove doctor
 
-### Patient Management  
+### Patient Management
+
 - `GET /api/patients` - Get all patients
 - `GET /api/patients/{id}` - Get specific patient
 - `POST /api/patients` - Add new patient
@@ -120,8 +144,9 @@ backend/
 ## Sample Data
 
 When you start the app, it automatically creates some test data:
+
 - 8 doctors with different specialties
-- 10 patients with medical info  
+- 10 patients with medical info
 - 8 appointments between doctors and patients
 - 8 bills for the appointments
 
@@ -142,13 +167,15 @@ You can see all this in the H2 console!
 ## Good for College Demo
 
 ### What to Show Your Lecturer:
-1. **Interactive Frontend** - Beautiful dashboard at http://localhost:8080/ 
+
+1. **Interactive Frontend** - Beautiful dashboard at http://localhost:8080/
 2. **Swagger API Documentation** - Professional API docs at http://localhost:8080/swagger-ui.html
 3. **Database management** - Show the H2 console with real data
 4. **API testing** - Use Swagger to test adding/viewing doctors and patients live
 5. **Spring Boot features** - Auto-configuration, dependency injection, clean architecture
 
 ### Things to Mention:
+
 - "Used Spring Boot to build this quickly"
 - "Single controller makes it simple to understand"
 - "H2 database means no setup needed"
@@ -160,6 +187,7 @@ You can see all this in the H2 console!
 ## If Something Goes Wrong
 
 ### Port 8080 Already Used?
+
 ```bash
 # Find what's using port 8080
 netstat -ano | findstr :8080
@@ -169,12 +197,14 @@ taskkill /PID <PID> /F
 ```
 
 ### Getting Compilation Errors?
+
 ```bash
 # Clean and rebuild everything
 .\mvnw.cmd clean compile
 ```
 
 ### App Won't Start?
+
 - Check Java version: `java -version` (needs to be 17 or higher)
 - Check Maven version: `mvn -version`
 - Make sure you're in the backend folder
@@ -184,4 +214,4 @@ taskkill /PID <PID> /F
 ## Built By
 
 **Hospital Management System - College Project**
-*Simple Spring Boot project for learning REST APIs*
+_Simple Spring Boot project for learning REST APIs_
