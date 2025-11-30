@@ -2,11 +2,18 @@ package com.hms.service;
 
 import com.hms.model.Doctor;
 import com.hms.model.Patient;
+import com.hms.model.Appointment;
+import com.hms.model.Bill;
 import com.hms.model.DoctorDTO;
 import com.hms.model.PatientDTO;
+import com.hms.model.AppointmentDTO;
+import com.hms.model.BillDTO;
 import com.hms.repository.DoctorRepository;
 import com.hms.repository.PatientRepository;
+import com.hms.repository.AppointmentRepository;
+import com.hms.repository.BillRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +24,17 @@ public class HospitalService {
 
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final BillRepository billRepository;
 
     public HospitalService(DoctorRepository doctorRepository, 
-                          PatientRepository patientRepository) {
+                          PatientRepository patientRepository,
+                          AppointmentRepository appointmentRepository,
+                          BillRepository billRepository) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.billRepository = billRepository;
     }
 
     // Doctor operations
@@ -31,7 +44,7 @@ public class HospitalService {
                 .collect(Collectors.toList());
     }
 
-    public DoctorDTO getDoctorById(Long id) {
+    public DoctorDTO getDoctorById(@NonNull Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
         return convertToDoctorDTO(doctor);
@@ -43,7 +56,7 @@ public class HospitalService {
         return convertToDoctorDTO(savedDoctor);
     }
 
-    public DoctorDTO updateDoctor(Long id, DoctorDTO doctorDTO) {
+    public DoctorDTO updateDoctor(@NonNull Long id, DoctorDTO doctorDTO) {
         Doctor existingDoctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
         
@@ -56,7 +69,7 @@ public class HospitalService {
         return convertToDoctorDTO(updatedDoctor);
     }
 
-    public void deleteDoctor(Long id) {
+    public void deleteDoctor(@NonNull Long id) {
         doctorRepository.deleteById(id);
     }
 
@@ -67,7 +80,7 @@ public class HospitalService {
                 .collect(Collectors.toList());
     }
 
-    public PatientDTO getPatientById(Long id) {
+    public PatientDTO getPatientById(@NonNull Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
         return convertToPatientDTO(patient);
@@ -79,7 +92,7 @@ public class HospitalService {
         return convertToPatientDTO(savedPatient);
     }
 
-    public PatientDTO updatePatient(Long id, PatientDTO patientDTO) {
+    public PatientDTO updatePatient(@NonNull Long id, PatientDTO patientDTO) {
         Patient existingPatient = patientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
         
@@ -93,12 +106,58 @@ public class HospitalService {
         return convertToPatientDTO(updatedPatient);
     }
 
-    public void deletePatient(Long id) {
+    public void deletePatient(@NonNull Long id) {
         patientRepository.deleteById(id);
     }
 
+    // Appointment operations
+    public List<AppointmentDTO> getAllAppointments() {
+        return appointmentRepository.findAll().stream()
+                .map(this::convertToAppointmentDTO)
+                .collect(Collectors.toList());
+    }
+
+    public AppointmentDTO getAppointmentById(@NonNull Long id) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        return convertToAppointmentDTO(appointment);
+    }
+
+    public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) {
+        Appointment appointment = convertToAppointment(appointmentDTO);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        return convertToAppointmentDTO(savedAppointment);
+    }
+
+    public void deleteAppointment(@NonNull Long id) {
+        appointmentRepository.deleteById(id);
+    }
+
+    // Billing operations
+    public List<BillDTO> getAllBills() {
+        return billRepository.findAll().stream()
+                .map(this::convertToBillDTO)
+                .collect(Collectors.toList());
+    }
+
+    public BillDTO getBillById(@NonNull Long id) {
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+        return convertToBillDTO(bill);
+    }
+
+    public BillDTO createBill(@NonNull BillDTO billDTO) {
+        Bill bill = convertToBill(billDTO);
+        Bill savedBill = billRepository.save(bill);
+        return convertToBillDTO(savedBill);
+    }
+
+    public void deleteBill(@NonNull Long id) {
+        billRepository.deleteById(id);
+    }
+
     // Helper methods
-    private DoctorDTO convertToDoctorDTO(Doctor doctor) {
+    private DoctorDTO convertToDoctorDTO(@NonNull Doctor doctor) {
         DoctorDTO dto = new DoctorDTO();
         dto.setId(doctor.getId());
         dto.setName(doctor.getName());
@@ -117,7 +176,7 @@ public class HospitalService {
         return doctor;
     }
 
-    private PatientDTO convertToPatientDTO(Patient patient) {
+    private PatientDTO convertToPatientDTO(@NonNull Patient patient) {
         PatientDTO dto = new PatientDTO();
         dto.setId(patient.getId());
         dto.setName(patient.getName());
@@ -136,5 +195,78 @@ public class HospitalService {
         patient.setDateOfBirth(dto.getDateOfBirth());
         patient.setMedicalHistory(dto.getMedicalHistory());
         return patient;
+    }
+
+    private AppointmentDTO convertToAppointmentDTO(@NonNull Appointment appointment) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setId(appointment.getId());
+        dto.setPatient(convertToPatientDTO(appointment.getPatient()));
+        dto.setDoctor(convertToDoctorDTO(appointment.getDoctor()));
+        dto.setAppointmentDateTime(appointment.getAppointmentDateTime());
+        dto.setStatus(appointment.getStatus());
+        dto.setReasonForVisit(appointment.getReasonForVisit());
+        dto.setNotes(appointment.getNotes());
+        return dto;
+    }
+
+    private Appointment convertToAppointment(@NonNull AppointmentDTO dto) {
+        Appointment appointment = new Appointment();
+        
+        // Handle patient - if only ID is provided, fetch from repository
+        if (dto.getPatient() != null) {
+            if (dto.getPatient().getId() != null) {
+                Patient patient = patientRepository.findById(dto.getPatient().getId())
+                        .orElseThrow(() -> new RuntimeException("Patient not found"));
+                appointment.setPatient(patient);
+            } else {
+                appointment.setPatient(convertToPatient(dto.getPatient()));
+            }
+        }
+        
+        // Handle doctor - if only ID is provided, fetch from repository
+        if (dto.getDoctor() != null) {
+            if (dto.getDoctor().getId() != null) {
+                Doctor doctor = doctorRepository.findById(dto.getDoctor().getId())
+                        .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                appointment.setDoctor(doctor);
+            } else {
+                appointment.setDoctor(convertToDoctor(dto.getDoctor()));
+            }
+        }
+        
+        appointment.setAppointmentDateTime(dto.getAppointmentDateTime());
+        appointment.setStatus(dto.getStatus() != null ? dto.getStatus() : "SCHEDULED");
+        appointment.setReasonForVisit(dto.getReasonForVisit());
+        appointment.setNotes(dto.getNotes());
+        return appointment;
+    }
+
+    private BillDTO convertToBillDTO(@NonNull Bill bill) {
+        BillDTO dto = new BillDTO();
+        dto.setId(bill.getId());
+        if (bill.getPatient() != null) {
+            dto.setPatient(convertToPatientDTO(bill.getPatient()));
+        }
+        dto.setAmount(bill.getAmount());
+        dto.setStatus(bill.getStatus());
+        dto.setBillDate(bill.getBillDate());
+        dto.setDueDate(bill.getDueDate());
+        dto.setDescription(bill.getDescription());
+        dto.setPaymentDate(bill.getPaymentDate());
+        return dto;
+    }
+
+    private Bill convertToBill(@NonNull BillDTO dto) {
+        Bill bill = new Bill();
+        if (dto.getPatient() != null) {
+            bill.setPatient(convertToPatient(dto.getPatient()));
+        }
+        bill.setAmount(dto.getAmount());
+        bill.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDING");
+        bill.setBillDate(dto.getBillDate() != null ? dto.getBillDate() : java.time.LocalDateTime.now());
+        bill.setDueDate(dto.getDueDate());
+        bill.setDescription(dto.getDescription());
+        bill.setPaymentDate(dto.getPaymentDate());
+        return bill;
     }
 }
