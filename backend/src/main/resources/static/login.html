@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login - Hospital Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        .login-container { 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+            width: 100%; 
+            max-width: 450px; 
+        }
+        .login-header { 
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        .login-header h1 { font-size: 2em; margin-bottom: 10px; }
+        .login-header p { font-size: 1em; opacity: 0.9; }
+        .login-body { padding: 40px; }
+        .form-group { margin: 20px 0; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+        }
+        .form-group input { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            transition: border-color 0.3s ease; 
+        }
+        .form-group input:focus { 
+            outline: none; 
+            border-color: #3498db; 
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1); 
+        }
+        .btn { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold; 
+            width: 100%; 
+            transition: all 0.3s ease; 
+            margin-top: 10px; 
+        }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(52,152,219,0.4); 
+        }
+        .btn:disabled { 
+            background: #6c757d; 
+            cursor: not-allowed; 
+            transform: none; 
+            box-shadow: none; 
+        }
+        .register-link { 
+            text-align: center; 
+            margin-top: 20px; 
+            color: #6c757d; 
+        }
+        .register-link a { 
+            color: #3498db; 
+            text-decoration: none; 
+            font-weight: bold; 
+        }
+        .register-link a:hover { 
+            text-decoration: underline; 
+        }
+        .alert { 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: none; 
+        }
+        .alert-error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .alert-success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .back-link { 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+        .back-link a { 
+            color: #6c757d; 
+            text-decoration: none; 
+            font-size: 14px; 
+        }
+        .back-link a:hover { 
+            text-decoration: underline; 
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🏥 Patient Portal</h1>
+            <p>Login to book appointments</p>
+        </div>
+        <div class="login-body">
+            <div id="alert" class="alert"></div>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="patient@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                
+                <button type="submit" class="btn" id="loginBtn">🔐 Login</button>
+                <button type="button" class="btn" onclick="loginAsDemo()" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); margin-top: 10px;">
+                    🎓 Demo Login (No Password Required)
+                </button>
+            </form>
+            
+            <div class="register-link">
+                Don't have an account? <a href="index.html">Register as Patient</a>
+            </div>
+            
+            <div class="back-link">
+                <a href="index.html">← Back to Main Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8081";
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = '🔄 Logging in...';
+            
+            try {
+                // For demo purposes, we'll check if patient exists by email
+                const response = await fetch(`${API_BASE}/api/patients`);
+                
+                if (response.ok) {
+                    const patients = await response.json();
+                    const patient = patients.find(p => p.email === email);
+                    
+                    if (patient) {
+                        // Store patient info in session
+                        sessionStorage.setItem('loggedInPatient', JSON.stringify({
+                            id: patient.id,
+                            name: patient.name,
+                            email: patient.email
+                        }));
+                        
+                        showAlert('✅ Login successful! Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'patient-dashboard.html';
+                        }, 1500);
+                    } else {
+                        showAlert('❌ No patient found with this email address', 'error');
+                    }
+                } else {
+                    showAlert('❌ Server error. Please try again.', 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Network error. Please check your connection.', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🔐 Login';
+            }
+            
+            async function handleLogin(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const loginBtn = document.getElementById('loginBtn');
+                
+                loginBtn.disabled = true;
+                loginBtn.textContent = '🔄 Logging in...';
+                
+                try {
+                    // For demo purposes, we'll check if patient exists by email
+                    const response = await fetch(`${API_BASE}/api/patients`);
+                    
+                    if (response.ok) {
+                        const patients = await response.json();
+                        const patient = patients.find(p => p.email === email);
+                        
+                        if (patient) {
+                            // Store patient info in session
+                            sessionStorage.setItem('loggedInPatient', JSON.stringify({
+                                id: patient.id,
+                                name: patient.name,
+                                email: patient.email
+                            }));
+                            
+                            showAlert('✅ Login successful! Redirecting...', 'success');
+                            
+                            setTimeout(() => {
+                                window.location.href = 'patient-dashboard.html';
+                            }, 1500);
+                        } else {
+                            showAlert('❌ No patient found with this email address', 'error');
+                        }
+                    } else {
+                        showAlert('❌ Server error. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    showAlert('❌ Network error. Please check your connection.', 'error');
+                } finally {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '🔐 Login';
+                }
+            }
+            
+            async function loginAsDemo() {
+                try {
+                    // Get all patients for demo selection
+                    const response = await fetch(`${API_BASE}/api/patients`);
+                    
+                    if (response.ok) {
+                        const patients = await response.json();
+                        
+                        if (patients.length > 0) {
+                            // Create patient selection modal
+                            const patientOptions = patients.map((patient, index) => 
+                                `<option value="${index}">${patient.name} (${patient.email})</option>`
+                            ).join('');
+                            
+                            const modal = `
+                                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                                    <div style="background: white; padding: 30px; border-radius: 10px; max-width: 400px; width: 90%;">
+                                        <h3 style="margin-bottom: 20px;">Select Patient for Demo Login</h3>
+                                        <select id="patientSelect" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;">
+                                            ${patientOptions}
+                                        </select>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button onclick="completeDemoLogin()" style="flex: 1; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Login</button>
+                                            <button onclick="closePatientModal()" style="flex: 1; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            document.body.insertAdjacentHTML('beforeend', modal);
+                            window.demoPatients = patients;
+                        } else {
+                            showAlert('❌ No patients found in the system', 'error');
+                        }
+                    } else {
+                        showAlert('❌ Server error. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    showAlert('❌ Network error. Please check your connection.', 'error');
+                }
+            }
+            
+            function completeDemoLogin() {
+                const selectedIndex = document.getElementById('patientSelect').value;
+                const demoPatient = window.demoPatients[selectedIndex];
+                
+                // Store selected patient info
+                sessionStorage.setItem('loggedInPatient', JSON.stringify({
+                    id: demoPatient.id,
+                    name: demoPatient.name,
+                    email: demoPatient.email
+                }));
+                
+                closePatientModal();
+                showAlert('✅ Demo login successful! Redirecting...', 'success');
+                
+                showAlert('You are already logged in. Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'patient-dashboard.html';
+                }, 1500);
+            }
+        };
+    </script>
+</body>
+</html>
