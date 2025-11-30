@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Hospital Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.8em; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .btn { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52,152,219,0.4); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .btn-success { background: linear-gradient(135deg, #27ae60 0%, #229954 100%); }
+        .nav-tabs { display: flex; background: #f8f9fa; border-bottom: 2px solid #e9ecef; }
+        .nav-tab { padding: 15px 25px; cursor: pointer; border: none; background: none; font-size: 1em; transition: all 0.3s ease; }
+        .nav-tab:hover { background: #e9ecef; }
+        .nav-tab.active { background: #3498db; color: white; }
+        .content { padding: 30px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: #2c3e50; margin-bottom: 20px; font-size: 1.5em; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .form-section { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 25px; margin-bottom: 20px; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #495057; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 5px; font-family: "Segoe UI", sans-serif; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; }
+        .data-table th { background: #3498db; color: white; font-weight: bold; }
+        .data-table tr:hover { background: #f8f9fa; }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .empty-state { text-align: center; padding: 40px; color: #6c757d; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-warning { background: #ffc107; color: #212529; }
+        .badge-danger { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>🏥 Patient Portal</h1>
+                <p>Welcome, <span id="patientName">Loading...</span></p>
+            </div>
+            <div class="user-info">
+                <span id="patientEmail">Loading...</span>
+                <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('book-appointment')">📅 Book Appointment</button>
+            <button class="nav-tab" onclick="showTab('my-appointments')">📋 My Appointments</button>
+            <button class="nav-tab" onclick="showTab('my-bills')">💳 My Bills</button>
+            <button class="nav-tab" onclick="showTab('my-profile')">👤 My Profile</button>
+        </div>
+        
+        <div class="content">
+            <div id="alert" class="alert"></div>
+            
+            <div id="book-appointment" class="tab-content active">
+                <div class="section">
+                    <h2>📅 Book New Appointment</h2>
+                    <div class="form-section">
+                        <form id="appointmentForm" onsubmit="bookAppointment(event)">
+                            <div class="form-group">
+                                <label for="doctor">Select Doctor *</label>
+                                <select id="doctor" required>
+                                    <option value="">Loading doctors...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appointmentDate">Appointment Date *</label>
+                                <input type="datetime-local" id="appointmentDate" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reason">Reason for Visit *</label>
+                                <input type="text" id="reason" required placeholder="e.g., Regular checkup, Fever, etc.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes">Additional Notes</label>
+                                <textarea id="notes" rows="3" placeholder="Any additional information..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success">📅 Book Appointment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="my-appointments" class="tab-content">
+                <div class="section">
+                    <h2>📋 My Appointments</h2>
+                    <button class="btn" onclick="loadMyAppointments()">🔄 Refresh</button>
+                    <div id="appointmentsList">
+                        <div class="empty-state">
+                            <h4>Loading your appointments...</h4>
+                            <p>Please wait while we fetch your appointment history.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="my-bills" class="tab-content">
+                <div class="section">
+                    <h2>💳 My Bills</h2>
+                    <button class="btn" onclick="loadMyBills()">🔄 Refresh Bills</button>
+                    <div id="billsList">
+                        <div class="empty-state">
+                            <h4>Loading your bills...</h4>
+                            <p>Please wait while we fetch your billing information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="my-profile" class="tab-content">
+                <div class="section">
+                    <h2>👤 My Profile</h2>
+                    <div id="profileInfo">
+                        <div class="empty-state">
+                            <h4>Loading your profile...</h4>
+                            <p>Please wait while we fetch your information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8081";
+        let currentPatient = null;
+        let doctors = [];
+        let appointments = [];
+        let bills = [];
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showTab(tabName) {
+            document.querySelectorAll(".tab-content").forEach(tab => { tab.classList.remove("active"); });
+            document.querySelectorAll(".nav-tab").forEach(tab => { tab.classList.remove("active"); });
+            document.getElementById(tabName).classList.add("active");
+            event.target.classList.add("active");
+            
+            if (tabName === 'my-appointments') {
+                loadMyAppointments();
+            } else if (tabName === 'my-bills') {
+                loadMyBills();
+            } else if (tabName === 'my-profile') {
+                loadProfile();
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('loggedInPatient');
+            showAlert('Logged out successfully. Redirecting to login...', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+        
+        async function loadDoctors() {
+            try {
+                const response = await fetch(`${API_BASE}/api/doctors`);
+                if (response.ok) {
+                    doctors = await response.json();
+                    const doctorSelect = document.getElementById('doctor');
+                    doctorSelect.innerHTML = '<option value="">Select a doctor</option>';
+                    
+                    doctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.textContent = `Dr. ${doctor.name} - ${doctor.specialty}`;
+                        doctorSelect.appendChild(option);
+                    });
+                } else {
+                    showAlert('Failed to load doctors', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error while loading doctors', 'error');
+            }
+        }
+        
+        async function bookAppointment(event) {
+            event.preventDefault();
+            
+            const doctorId = document.getElementById('doctor').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const reason = document.getElementById('reason').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!currentPatient) {
+                showAlert('Patient information not available', 'error');
+                return;
+            }
+            
+            const appointmentData = {
+                patient: { id: currentPatient.id },
+                doctor: { id: parseInt(doctorId) },
+                appointmentDateTime: appointmentDate,
+                reasonForVisit: reason,
+                notes: notes,
+                status: 'SCHEDULED'
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/appointments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                if (response.ok) {
+                    showAlert('✅ Appointment booked successfully!', 'success');
+                    document.getElementById('appointmentForm').reset();
+                    
+                    // Switch to appointments tab to show the new appointment
+                    setTimeout(() => {
+                        document.querySelector('[onclick="showTab(\'my-appointments\')"]').click();
+                    }, 1500);
+                } else {
+                    const error = await response.text();
+                    showAlert(`❌ Failed to book appointment: ${error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Network error while booking appointment', 'error');
+            }
+        }
+        
+        async function loadMyAppointments() {
+            if (!currentPatient) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/appointments`);
+                if (response.ok) {
+                    const allAppointments = await response.json();
+                    appointments = allAppointments.filter(apt => {
+                        try {
+                            return apt.patient && apt.patient.id && apt.patient.id === currentPatient.id;
+                        } catch (error) {
+                            console.warn('Invalid appointment data:', apt);
+                            return false;
+                        }
+                    });
+                    displayAppointments();
+                } else {
+                    showAlert('Failed to load appointments', 'error');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                showAlert('Network error while loading appointments', 'error');
+            }
+        }
+        
+        async function loadMyBills() {
+            if (!currentPatient) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/bills`);
+                if (response.ok) {
+                    const allBills = await response.json();
+                    bills = allBills.filter(bill => {
+                        try {
+                            return bill.patient && bill.patient.id && bill.patient.id === currentPatient.id;
+                        } catch (error) {
+                            console.warn('Invalid bill data:', bill);
+                            return false;
+                        }
+                    });
+                    displayBills();
+                } else {
+                    showAlert('Failed to load bills', 'error');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                showAlert('Network error while loading bills', 'error');
+            }
+        }
+        
+        function displayBills() {
+            const billsListDiv = document.getElementById('billsList');
+            
+            if (bills.length === 0) {
+                billsListDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h4>No bills found</h4>
+                        <p>You don't have any bills at this time.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Bill Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            bills.forEach(bill => {
+                try {
+                    const billDate = bill.billDate ? new Date(bill.billDate).toLocaleDateString() : 'N/A';
+                    const dueDate = bill.dueDate ? new Date(bill.dueDate).toLocaleDateString() : 'N/A';
+                    const statusBadge = getBillStatusBadge(bill.status);
+                    const amount = bill.amount ? `$${bill.amount.toFixed(2)}` : 'N/A';
+                    const description = bill.description || 'Medical Services';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${billDate}</td>
+                            <td>${description}</td>
+                            <td><strong>${amount}</strong></td>
+                            <td>${statusBadge}</td>
+                            <td>${dueDate}</td>
+                        </tr>
+                    `;
+                } catch (error) {
+                    console.warn('Error displaying bill:', bill, error);
+                    // Skip this bill but continue with others
+                }
+            });
+            
+            tableHTML += '</tbody></table>';
+            billsListDiv.innerHTML = tableHTML;
+        }
+        
+        function getBillStatusBadge(status) {
+            const badges = {
+                'PENDING': '<span class="badge badge-warning">Pending</span>',
+                'PAID': '<span class="badge badge-success">Paid</span>',
+                'OVERDUE': '<span class="badge badge-danger">Overdue</span>',
+                'CANCELLED': '<span class="badge badge-info">Cancelled</span>'
+            };
+            return badges[status] || status;
+        }
+        
+        function displayAppointments() {
+            const appointmentsListDiv = document.getElementById('appointmentsList');
+            
+            if (appointments.length === 0) {
+                appointmentsListDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h4>No appointments found</h4>
+                        <p>You haven't booked any appointments yet.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Doctor</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            appointments.forEach(appointment => {
+                try {
+                    const date = appointment.appointmentDateTime ? new Date(appointment.appointmentDateTime).toLocaleString() : 'N/A';
+                    const statusBadge = getStatusBadge(appointment.status);
+                    const doctorName = appointment.doctor && appointment.doctor.name ? appointment.doctor.name : 'Unknown';
+                    const reason = appointment.reasonForVisit || 'N/A';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>Dr. ${doctorName}</td>
+                            <td>${reason}</td>
+                            <td>${statusBadge}</td>
+                        </tr>
+                    `;
+                } catch (error) {
+                    console.warn('Error displaying appointment:', appointment, error);
+                    // Skip this appointment but continue with others
+                }
+            });
+            
+            tableHTML += '</tbody></table>';
+            appointmentsListDiv.innerHTML = tableHTML;
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'SCHEDULED': '<span class="badge badge-warning">Scheduled</span>',
+                'COMPLETED': '<span class="badge badge-success">Completed</span>',
+                'CANCELLED': '<span class="badge badge-danger">Cancelled</span>'
+            };
+            return badges[status] || status;
+        }
+        
+        async function loadProfile() {
+            if (!currentPatient) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/patients/${currentPatient.id}`);
+                if (response.ok) {
+                    const patient = await response.json();
+                    displayProfile(patient);
+                } else {
+                    showAlert('Failed to load profile', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error while loading profile', 'error');
+            }
+        }
+        
+        function displayProfile(patient) {
+            const profileInfoDiv = document.getElementById('profileInfo');
+            
+            profileInfoDiv.innerHTML = `
+                <div class="form-section">
+                    <h3>Patient Information</h3>
+                    <p><strong>Name:</strong> ${patient.name}</p>
+                    <p><strong>Email:</strong> ${patient.email}</p>
+                    <p><strong>Phone:</strong> ${patient.phone}</p>
+                    <p><strong>Date of Birth:</strong> ${patient.dateOfBirth || 'N/A'}</p>
+                    <p><strong>Medical History:</strong> ${patient.medicalHistory || 'No medical history recorded'}</p>
+                </div>
+            `;
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            const loggedInPatient = sessionStorage.getItem('loggedInPatient');
+            
+            if (!loggedInPatient) {
+                showAlert('Please login to access the patient portal', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+            
+            currentPatient = JSON.parse(loggedInPatient);
+            document.getElementById('patientName').textContent = currentPatient.name;
+            document.getElementById('patientEmail').textContent = currentPatient.email;
+            
+            // Set minimum date to today for appointment booking
+            const today = new Date().toISOString().slice(0, 16);
+            document.getElementById('appointmentDate').min = today;
+            
+            // Load initial data
+            loadDoctors();
+            loadMyAppointments();
+        };
+    </script>
+</body>
+</html>
